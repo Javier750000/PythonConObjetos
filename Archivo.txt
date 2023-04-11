@@ -1,0 +1,42 @@
+program TestCorrect;
+
+var
+   x, y: int;
+   z:float;
+   id1, id2[4], id3[2][3] : int;
+
+func int hola (int x)
+{
+
+}
+return (1);
+
+main()
+var
+   x, y: int;
+   z:float;
+{
+   x = 1;
+   y = 2;
+   z = (x+y*3)/4;
+   read (A[i+1], B[i+1]);
+   print("hola", "adios", x);
+   for (i = 0 until xyz)
+   {
+   }
+   A[i+1] = A[i]*i;
+   A[i+1] = hola(x, y)+a[x+z]-5;
+   hola(x,y,z)
+   A=desviacion(B);
+   A=media(B)*4;
+   while (i < x)
+   {
+   }
+   if (z > x) {
+      print("hola mundo",(x+y));
+   }
+   else
+   {
+     read(x);
+   };
+}
