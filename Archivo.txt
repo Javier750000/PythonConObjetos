@@ -1,5 +1,22 @@
 program TestCorrect;
 
+clase Alumno hereda Persona
+{
+   atributos
+   {
+      edad: int;
+      nombre[30]: char;
+   }
+   metodos
+   {
+      func int UNO (int x)
+      {
+         return (edad-x);  
+      }
+   }
+};
+
+
 var
    x, y: int;
    z:float;
@@ -7,9 +24,15 @@ var
 
 func int hola (int x)
 {
-
+   if (a > 10)
+   {
+      return (x);
+   }
+   else
+   {
+      return (y);
+   }
 }
-return (1);
 
 main()
 var
@@ -27,8 +50,8 @@ var
    A[i+1] = A[i]*i;
    A[i+1] = hola(x, y)+a[x+z]-5;
    hola(x,y,z)
-   A=desviacion(B);
-   A=media(B)*4;
+   A=factorial(B);
+   A=fibonacci(B)*4;
    while (i < x)
    {
    }
@@ -38,5 +61,5 @@ var
    else
    {
      read(x);
-   };
+   }
 }

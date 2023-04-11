@@ -3,7 +3,34 @@ from ply.yacc import yacc
 
 def p_programa(p):
     '''
-    programa : PROGRAM ID PUNTOYCOMA vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
+    programa : PROGRAM ID PUNTOYCOMA clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
+    '''
+
+def p_clases(p):
+    '''
+    clases : CLASE ID herencia bloqueClase clases
+           | empty
+    '''
+
+def p_herencia(p):
+    '''
+    herencia : HEREDA ID
+             | empty
+    '''
+
+def p_bloqueClase(p):
+    '''
+    bloqueClase : LLAVEINICIAL ATRIBUTOS bloqueAtributos METODOS bloqueMetodos LLAVEFINAL PUNTOYCOMA
+    '''
+
+def p_bloqueAtributos(p):
+    '''
+    bloqueAtributos : LLAVEINICIAL listaVars LLAVEFINAL
+    '''
+
+def p_bloqueMetodos(p):
+    '''
+    bloqueMetodos : LLAVEINICIAL funciones LLAVEFINAL
     '''
 
 def p_funciones(p):
@@ -15,7 +42,7 @@ def p_funciones(p):
 
 def p_funcionSimple(p):
     '''
-    funcionSimple : FUNC tipo ID PARENTESISINICIAL param PARENTESISFINAL vars2 bloque RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA funciones
+    funcionSimple : FUNC tipo ID PARENTESISINICIAL param PARENTESISFINAL vars2 bloqueFuncional funciones
     '''
 
 def p_funcionVoid(p):
@@ -115,13 +142,47 @@ def p_asignacion(p):
 
 def p_condicion(p):
     '''
-    condicion : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL bloque bloqueCondicional PUNTOYCOMA
+    condicion : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL bloque bloqueCondicional
     '''
 
 def p_bloqueCondicional(p):
     '''
     bloqueCondicional : ELSE bloque
                       | empty
+    '''
+
+def p_bloqueFuncional(p):
+    '''
+    bloqueFuncional : LLAVEINICIAL estatutoFuncional2 LLAVEFINAL
+    '''
+
+def p_estatutoFuncional2(p):
+    '''
+    estatutoFuncional2 : estatutoFuncional estatutoFuncional2
+                       | empty
+    '''
+
+def p_estatutoFuncional(p):
+    '''
+    estatutoFuncional : asignacion
+                      | condicionFuncional
+                      | escritura
+                      | lectura
+                      | cicloFor
+                      | cicloWhile
+                      | llamada
+                      | RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA
+    '''
+
+def p_condicionFuncional(p):
+    '''
+    condicionFuncional : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL bloqueFuncional bloqueCondicionalFuncional
+    '''
+
+def p_bloqueCondicionalFuncional(p):
+    '''
+    bloqueCondicionalFuncional : ELSE bloqueFuncional
+                               | empty
     '''
 
 def p_escritura(p):

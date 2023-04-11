@@ -2,6 +2,10 @@ from ply.lex import lex
 
 palabrasReservadas = {
     'program': 'PROGRAM',
+    'clase': 'CLASE',
+    'hereda': 'HEREDA',
+    'atributos': 'ATRIBUTOS',
+    'metodos': 'METODOS',
     'var': 'VAR',
     'main': 'MAIN',
     'print': 'PRINT',
