@@ -46,6 +46,7 @@ tokens = [
         'COMA',
         'PUNTOYCOMA',
         'DOSPUNTOS',
+        'PUNTO',
         'ID', 
         'CTE_I', 
         'CTE_F',
@@ -73,6 +74,7 @@ t_CORCHETEFINAL = r']'
 t_COMA = r','
 t_PUNTOYCOMA = r';'
 t_DOSPUNTOS = r':'
+t_PUNTO = r'.'
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -90,7 +92,7 @@ def t_CTE_F(t):
     return t
 
 def t_CTE_STRING(t):
-    r'\"[a-zA-Z0-9_!\s]*\"'
+    r'\"[a-zA-Z0-9_!\s\.]*\"'
     t.value = t.value[1:-1]
     return t
 

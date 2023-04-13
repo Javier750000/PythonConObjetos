@@ -4,8 +4,8 @@ clase Alumno hereda Persona
 {
    atributos
    {
-      edad: int;
-      nombre[30]: char;
+      int: edad;
+      char: nombre[30];
    }
    metodos
    {
@@ -16,11 +16,13 @@ clase Alumno hereda Persona
    }
 };
 
-
 var
-   x, y: int;
-   z:float;
-   id1, id2[4], id3[2][3] : int;
+   int: x, y;
+   Persona: a, b, c;
+   float: z;
+   Carro: i, j, k;
+   int: id1, id2[4], id3[2][3];
+   char: listaNombres[100];
 
 func int hola (int x)
 {
@@ -34,14 +36,17 @@ func int hola (int x)
    }
 }
 
-main()
-var
-   x, y: int;
-   z:float;
+func void hola ()
 {
+   print("Hola.");
+}
+
+{
+   a.nombre = "Juan";
+   listaNombres = "Jose";
    x = 1;
    y = 2;
-   z = (x+y*3)/4;
+   z = (x+y+z+a*3)/4;
    read (A[i+1], B[i+1]);
    print("hola", "adios", x);
    for (i = 0 until xyz)
@@ -52,10 +57,48 @@ var
    hola(x,y,z)
    A=factorial(B);
    A=fibonacci(B)*4;
+   A=numero();
+   A=Persona.nombre;
+   A=Persona.calcular(edad);
    while (i < x)
    {
    }
-   if (z > x) {
+   if (z > x && a < b && c < d) {
+      print("hola mundo",(x+y));
+   }
+   else
+   {
+     read(x);
+   }
+}
+
+main()
+var
+   int: x, y;
+   float: z;
+{
+   a.nombre = "Juan";
+   listaNombres = "Jose";
+   x = 1;
+   y = 2;
+   z = (x+y+z+a*3)/4;
+   read (A[i+1], B[i+1]);
+   print("hola", "adios", x);
+   for (i = 0 until xyz)
+   {
+   }
+   A[i+1] = A[i]*i;
+   A[i+1] = hola(x, y)+a[x+z]-5;
+   hola(x,y,z)
+   A=factorial(B);
+   A=fibonacci(B)+C-4;
+   A=numero();
+   A=Persona.nombre;
+   A=Persona.calcular(edad);
+   while (i < x)
+   {
+   }
+   if (z > x && a < b && c < d) {
       print("hola mundo",(x+y));
    }
    else

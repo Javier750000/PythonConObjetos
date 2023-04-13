@@ -3,7 +3,7 @@ from ply.yacc import yacc
 
 def p_programa(p):
     '''
-    programa : PROGRAM ID PUNTOYCOMA clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
+    programa : PROGRAM ID PUNTOYCOMA clases vars2 funciones bloque MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
     '''
 
 def p_clases(p):
@@ -25,7 +25,7 @@ def p_bloqueClase(p):
 
 def p_bloqueAtributos(p):
     '''
-    bloqueAtributos : LLAVEINICIAL listaVars LLAVEFINAL
+    bloqueAtributos : LLAVEINICIAL listaVarsSimples LLAVEFINAL
     '''
 
 def p_bloqueMetodos(p):
@@ -53,6 +53,7 @@ def p_funcionVoid(p):
 def p_param(p):
     '''
     param : tipo ID paramsAdicionales
+          | empty
     '''
 
 def p_paramsAdicionales(p):
@@ -69,17 +70,22 @@ def p_vars2(p):
 
 def p_vars(p):
     '''
-    vars : VAR listaVars
+    vars : VAR listaVarsSimples
+         | VAR listaVarsCompuestas
     '''
 
-def p_listaVars(p):
+def p_listaVarsSimples(p):
     '''
-    listaVars : listaIDs DOSPUNTOS tipo PUNTOYCOMA varsAdicionales
+    listaVarsSimples : tipo DOSPUNTOS listaIDsSimples PUNTOYCOMA varsAdicionales
+    '''
+def p_listaVarsCompuestas(p):
+    '''
+    listaVarsCompuestas : ID DOSPUNTOS listaIDsCompuestos PUNTOYCOMA varsAdicionales
     '''
 
-def p_listaIDs(p):
+def p_listaIDsSimples(p):
     '''
-    listaIDs : ID array comasAdicionales
+    listaIDsSimples : ID array comasAdicionalesSimples
     '''
 
 def p_array(p):
@@ -94,15 +100,27 @@ def p_matrix(p):
            | empty
     '''
 
-def p_comasAdicionales(p):
+def p_listaIDsCompuestos(p):
     '''
-    comasAdicionales : COMA listaIDs
-                     | empty
+    listaIDsCompuestos : ID comasAdicionalesCompuestas
+    '''
+
+def p_comasAdicionalesSimples(p):
+    '''
+    comasAdicionalesSimples : COMA listaIDsSimples
+                            | empty
+    '''
+
+def p_comasAdicionalesCompuestas(p):
+    '''
+    comasAdicionalesCompuestas : COMA listaIDsCompuestos
+                               | empty
     '''
 
 def p_varsAdicionales(p):
     '''
-    varsAdicionales : listaVars
+    varsAdicionales : listaVarsSimples
+                    | listaVarsCompuestas
                     | empty
     '''
 
@@ -138,6 +156,7 @@ def p_estatuto(p):
 def p_asignacion(p):
     '''
     asignacion : variable IGUALA hiperexpresion PUNTOYCOMA
+               | variable IGUALA CTE_STRING PUNTOYCOMA 
     '''
 
 def p_condicion(p):
@@ -231,6 +250,7 @@ def p_cicloWhile(p):
 def p_llamada(p):
     '''
     llamada : ID PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
+            | ID PUNTO ID PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
     '''
 
 def p_listaHiperexpresiones(p):
@@ -247,6 +267,7 @@ def p_hiperexpresionesAdicionales(p):
 def p_variable(p):
     '''
     variable : ID arrayVariable
+             | ID PUNTO ID
     '''
 
 def p_arrayVariable(p):
@@ -268,8 +289,8 @@ def p_hiperexpresion(p):
 
 def p_andOr(p):
     '''
-    andOr : AND superexpresion
-          | OR superexpresion
+    andOr : AND hiperexpresion
+          | OR hiperexpresion
           | empty
     '''
 
@@ -319,6 +340,7 @@ def p_factor(p):
 	       | var_cte
            | variable
            | llamada
+           | empty
     '''
 
 def p_var_cte(p):
