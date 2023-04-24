@@ -2,7 +2,7 @@ class cuboSemantico:
 	def _init_(self):
 		self.table =
 		{
-			('int', 'int', '+'): 'int',
+            ('int', 'int', '+'): 'int',
             ('int', 'int', '-'): 'int',
             ('int', 'int', '*'): 'int',
             ('int', 'int', '/'): 'int',
@@ -225,4 +225,4 @@ class cuboSemantico:
             ('bool', 'bool', '<>'): 'bool',
             ('bool', 'bool', '&&'): 'bool',
             ('bool', 'bool', '||'): 'bool'
-		}
+        }
