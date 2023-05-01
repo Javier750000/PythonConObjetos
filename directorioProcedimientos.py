@@ -1,8 +1,6 @@
-directorioProcedimientos = {}
+from tablaVariables import *
 
-nombreFuncion = ''
-tipoFuncion = ''
-tablaVariables = {}
+directorioProcedimientos = {}
 
 pilaOperadores = []
 pilaOperandos = []
