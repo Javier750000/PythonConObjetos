@@ -1,10 +1,30 @@
 from lex import lexer, tokens
 from ply.yacc import yacc
+from directorioProcedimientos import Directorio
+from avail import Avail
+from cuadruplos import Cuadruplos
+from cuboSemantico import CuboSemantico
+
+directorio = Directorio()
+avail = Avail()
+cuadruplos = Cuadruplos()
+cuboSemantico = CuboSemantico()
+pilaOperandos = []
+pilaOperadores = []
 
 def p_programa(p):
     '''
-    programa : PROGRAM ID PUNTOYCOMA clases vars2 funciones bloque MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
+    programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA clases vars2 funciones bloque MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
     '''
+    print("Variables función:", p[12]);
+    directorio.agregarFuncion(nombreFuncion=p[9], tipoFuncion='void', variablesFuncion=p[12])
+    print(cuadruplos.listaCuadruplos)
+
+def p_inicializarDirectorio(p):
+    '''
+    inicializarDirectorio : empty
+    '''
+    directorio.contextoGlobal()
 
 def p_clases(p):
     '''
@@ -67,17 +87,21 @@ def p_vars2(p):
     vars2 : vars
           | empty
     '''
+    p[0] = p[1]
 
 def p_vars(p):
     '''
     vars : VAR listaVarsSimples
          | VAR listaVarsCompuestas
     '''
+    p[0] = p[2]
 
 def p_listaVarsSimples(p):
     '''
     listaVarsSimples : tipo DOSPUNTOS listaIDsSimples PUNTOYCOMA varsAdicionales
     '''
+    p[0] = p[3]
+
 def p_listaVarsCompuestas(p):
     '''
     listaVarsCompuestas : ID DOSPUNTOS listaIDsCompuestos PUNTOYCOMA varsAdicionales
@@ -87,6 +111,9 @@ def p_listaIDsSimples(p):
     '''
     listaIDsSimples : ID array comasAdicionalesSimples
     '''
+    print("Variables adicionales:", p[1])
+    print("Comas adicionales:", p[3])
+    p[0] += (p[1] + p[3])
 
 def p_array(p):
     '''
@@ -110,6 +137,14 @@ def p_comasAdicionalesSimples(p):
     comasAdicionalesSimples : COMA listaIDsSimples
                             | empty
     '''
+
+    '''
+    Este código está fallando.
+    '''
+    if len(p) == 2:
+        p[0] += p[1]
+    else:
+        p[0] = []
 
 def p_comasAdicionalesCompuestas(p):
     '''

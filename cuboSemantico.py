@@ -19,10 +19,9 @@ bool: 4
 Error: -1
 '''
 
-class cuboSemantico:
-	def _init_(self):
-		self.table =
-		{
+class CuboSemantico:
+    def _init_(self):
+        self.table = {
             (1, 1, 11): 1,
             (1, 1, 12): 1,
             (1, 1, 13): 1,
@@ -247,3 +246,7 @@ class cuboSemantico:
             (4, 4, 22): 4,
             (4, 4, 23): 4,
         }
+
+    def validarTipos(self, tipoIzq, tipoDer, operador):
+        if (tipoIzq, tipoDer, operador) in self.table:
+            return self.table[(tipoIzq, tipoDer, operador)]

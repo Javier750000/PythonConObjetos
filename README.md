@@ -9,3 +9,6 @@ Comenzamos a trabajar en el cubo semántico, aunque tenemos dudas de si es neces
 
 ## Tercer avance (semántica, generación de código de expresiones y estatutos lineales)
 Modificamos el cubo semántico para que haga uso de números enteros en lugar de strings para los tipos, operadores y errores. Esta mejora permite un manejo más sencillo del cubo que con el uso de strings. También completamos la tabla de variables con sus métodos para declarar las variables y sus valores, además de poder buscar las variables por ID y cuál es su tipo. Nos queda pendiente terminar el directorio de procedimientos y el uso de los cuádruplos.
+
+## Cuarto avance (Generación de código de estatutos condicionales y cíclicos)
+Creamos las clases que teníamos pendientes del directorio de funciones, el avail y los cuádruplos con sus constructores y métodos para manejar los datos. Refactorizamos la tabla de variables para faciliatar su uso en el directorio de procedimientos. Al intentar leer las funciones para guardarlas en el directorio, estamos teniendo problemas para guardar las variables en la parte de los tipos y las comas.
