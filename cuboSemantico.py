@@ -20,7 +20,7 @@ Error: -1
 '''
 
 class CuboSemantico:
-    def _init_(self):
+    def __init__(self):
         self.table = {
             (1, 1, 11): 1,
             (1, 1, 12): 1,

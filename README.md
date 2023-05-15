@@ -12,3 +12,6 @@ Modificamos el cubo semántico para que haga uso de números enteros en lugar de
 
 ## Cuarto avance (Generación de código de estatutos condicionales y cíclicos)
 Creamos las clases que teníamos pendientes del directorio de funciones, el avail y los cuádruplos con sus constructores y métodos para manejar los datos. Refactorizamos la tabla de variables para facilitar su uso en el directorio de procedimientos. Al intentar leer las funciones para guardarlas en el directorio, estamos teniendo problemas para guardar las variables en la parte de los tipos y las comas.
+
+## Quinto avance (Generación de código de funciones)
+Nos enfocamos en la generación de los cuádruplos para las expresiones aritméticas y los estatutos lineales, implementándolos dentro de la sintaxis y guiándonos con los puntos neurálgicos de las presentaciones. Sin embargo, los cuádruplos generados no son los correctos. También resolvimos un error en el cubo semántico que no nos permitía hacer uso de la tabla porque estaba mal declarado el init. Continuaremos trabajando en resolver los errores en la generación de los cuádruplos y la validación para prevenir que las variables y las funciones puedan estar duplicadas.
