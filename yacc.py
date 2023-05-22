@@ -4,13 +4,18 @@ from directorioProcedimientos import Directorio
 from avail import Avail
 from cuadruplos import Cuadruplos
 from cuboSemantico import CuboSemantico
+from constantes import Constantes
 
 directorio = Directorio()
 avail = Avail()
 cuadruplos = Cuadruplos()
 cuboSemantico = CuboSemantico()
+constantes = Constantes()
 pilaOperandos = []
 pilaOperadores = []
+pilaSaltos = []
+pilaVariableControl = []
+pilaDimensiones = []
 
 def p_programa(p):
     '''
@@ -116,8 +121,7 @@ def p_listaIDsSimples(p):
     listaIDsSimples : ID array comasAdicionalesSimples
     '''
 
-    print("Variables adicionales:", p[1])
-    print("Comas adicionales:", p[3])
+    print("Variable:", p[1])
     print("")
     '''
     p[0] += (p[1] + p[3])
@@ -203,7 +207,7 @@ def p_asignacion(p):
     asignacion : variable IGUALA hiperexpresion PUNTOYCOMA
                | variable IGUALA CTE_STRING PUNTOYCOMA 
     '''
-    valorVariable, tipoVariable = p[1]
+    valorVariable = p[1]
     '''
     valorHiperexpresion, tipoHiperexpresion = pilaOperandos.pop()
     tipoResultado = cuboSemantico.validarTipos(tipoVariable, tipoHiperexpresion, '=')
@@ -341,7 +345,7 @@ def p_variable(p):
     variable : ID arrayVariable
              | ID PUNTO ID
     '''
-    p[0] = ("Variable " + p[1], 'bool')
+    p[0] = p[1]
 
 def p_arrayVariable(p):
     '''

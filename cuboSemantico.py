@@ -250,3 +250,4 @@ class CuboSemantico:
     def validarTipos(self, tipoIzq, tipoDer, operador):
         if (tipoIzq, tipoDer, operador) in self.table:
             return self.table[(tipoIzq, tipoDer, operador)]
+        return None

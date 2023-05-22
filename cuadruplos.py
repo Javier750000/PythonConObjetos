@@ -7,3 +7,6 @@ class Cuadruplos:
         cuadruplo = [operador, operandoIzq, operandoDer, resultado]
         self.listaCuadruplos.append(cuadruplo)
         self.contador += 1
+
+    def llenarCuadruploPendiente(self, cuadruploPendiente, indice, valor):
+        self.listaCuadruplos[cuadruploPendiente][indice] = valor
