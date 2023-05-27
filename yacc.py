@@ -13,20 +13,22 @@ cuboSemantico = CuboSemantico()
 constantes = Constantes()
 pilaOperandos = []
 pilaOperadores = []
+pilaTipos = []
 pilaSaltos = []
-pilaVariableControl = []
+pilaContextos = []
 pilaDimensiones = []
 
 def p_programa(p):
     '''
-    programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA clases vars2 funciones bloque MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
+    programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
     '''
-    print("Variables función:", p[12]);
+    print("Directorio:", directorio.tabla)
     print("")
-    '''
-    directorio.agregarFuncion(nombreFuncion=p[9], tipoFuncion='void', variablesFuncion=p[12])
-    '''
-    print(cuadruplos.listaCuadruplos)
+
+    i=1
+    for cuadruplo in cuadruplos.listaCuadruplos:
+        print(f'{i}: {cuadruplo}')
+        i+=1;
     print("")
 
 def p_inicializarDirectorio(p):
@@ -34,6 +36,7 @@ def p_inicializarDirectorio(p):
     inicializarDirectorio : empty
     '''
     directorio.contextoGlobal()
+    pilaContextos.append("global")
 
 def p_clases(p):
     '''
@@ -71,19 +74,39 @@ def p_funciones(p):
 
 def p_funcionSimple(p):
     '''
-    funcionSimple : FUNC tipo ID PARENTESISINICIAL param PARENTESISFINAL vars2 bloqueFuncional funciones
+    funcionSimple : FUNC tipo ID agregarFuncion PARENTESISINICIAL param PARENTESISFINAL vars2 bloqueFuncional eliminarContexto funciones
     '''
 
 def p_funcionVoid(p):
     '''
-    funcionVoid : FUNC VOID ID PARENTESISINICIAL param PARENTESISFINAL vars2 bloque funciones
+    funcionVoid : FUNC VOID ID agregarFuncion PARENTESISINICIAL param PARENTESISFINAL vars2 bloque eliminarContexto funciones
     '''
+
+def p_agregarFuncion(p):
+    '''
+    agregarFuncion :
+    '''
+    directorio.agregarFuncion(p[-1], p[-2])
+    pilaContextos.append(p[-1])
+
+def p_eliminarContexto(p):
+    '''
+    eliminarContexto : 
+    '''
+    pilaContextos.pop()
 
 def p_param(p):
     '''
-    param : tipo ID paramsAdicionales
+    param : tipo ID agregarParam paramsAdicionales
           | empty
     '''
+
+def p_agregarParam(p):
+    '''
+    agregarParam :
+    '''
+    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
+    directorio.agregarParametros(p[-2], pilaContextos[-1])
 
 def p_paramsAdicionales(p):
     '''
@@ -107,9 +130,15 @@ def p_vars(p):
 
 def p_listaVarsSimples(p):
     '''
-    listaVarsSimples : tipo DOSPUNTOS listaIDsSimples PUNTOYCOMA varsAdicionales
+    listaVarsSimples : tipo guardarTipo DOSPUNTOS listaIDsSimples PUNTOYCOMA varsAdicionales
     '''
     p[0] = p[3]
+
+def p_guardarTipo(p):
+    '''
+    guardarTipo : 
+    '''
+    directorio.tipo = p[-1]
 
 def p_listaVarsCompuestas(p):
     '''
@@ -120,12 +149,9 @@ def p_listaIDsSimples(p):
     '''
     listaIDsSimples : ID array comasAdicionalesSimples
     '''
-
     print("Variable:", p[1])
     print("")
-    '''
-    p[0] += (p[1] + p[3])
-    '''
+    directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
 
 def p_array(p):
     '''
@@ -150,15 +176,6 @@ def p_comasAdicionalesSimples(p):
                             | empty
     '''
 
-    '''
-    Este código está fallando.
-    
-    if len(p) == 2:
-        p[0] += p[1]
-    else:
-        p[0] = []
-    '''
-
 def p_comasAdicionalesCompuestas(p):
     '''
     comasAdicionalesCompuestas : COMA listaIDsCompuestos
@@ -178,6 +195,7 @@ def p_tipo(p):
          | FLOAT
          | CHAR
     '''
+    p[0] = p[1]
 
 def p_bloque(p):
     '''
@@ -207,9 +225,10 @@ def p_asignacion(p):
     asignacion : variable IGUALA hiperexpresion PUNTOYCOMA
                | variable IGUALA CTE_STRING PUNTOYCOMA 
     '''
-    valorVariable = p[1]
     '''
-    valorHiperexpresion, tipoHiperexpresion = pilaOperandos.pop()
+    valorVariable = p[1]
+    valorHiperexpresion = pilaOperandos.pop()
+    tipoHiperexpresion = pilaTipos.pop()
     tipoResultado = cuboSemantico.validarTipos(tipoVariable, tipoHiperexpresion, '=')
     if tipoResultado:
         cuadruplos.generarCuadruploNuevo('=', valorHiperexpresion, None, valorVariable)
@@ -439,8 +458,10 @@ def p_cuadruploTermino(p):
 
 def agregarCuadruplo(listaOperadores):
     if pilaOperadores and pilaOperadores[-1] in listaOperadores:
-        valorDer, tipoDer = pilaOperandos.pop()
-        valorIzq, tipoIzq = pilaOperandos.pop()
+        valorDer = pilaOperandos.pop()
+        tipoDer = pilaTipos.pop()
+        valorIzq = pilaOperandos.pop()
+        tipoIzq = pilaTipos.pop()
         operador = pilaOperadores.pop()
         tipoResultado = cuboSemantico.validarTipos(tipoIzq, tipoDer, operador)
         if tipoResultado:
@@ -459,9 +480,7 @@ def p_factor(p):
            | llamada
            | empty
     '''
-    if len(p) == 2:
-        temporal = p[1]
-        pilaOperandos.append(temporal)
+    pilaOperandos.append(p[1])
 
 def p_agregarParentesis(p):
     '''

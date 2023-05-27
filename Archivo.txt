@@ -1,108 +1,44 @@
-program TestCorrect;
+program patito;
+var 
+   int: i, j, k;
+   int: Arreglo[10];
+   int: Matriz[10][8];
 
-clase Alumno hereda Persona
-{
-   atributos
-   {
-      int: edad;
-      char: nombre[30];
-   }
-   metodos
-   {
-      func int UNO (int x)
-      {
-         return (edad-x);  
-      }
-   }
-};
-
+func int fact (int j)
 var
-   int: x, y;
-   Persona: a, b, c;
-   float: z;
-   Carro: i, j, k;
-   int: id1, id2[4], id3[2][3];
-   char: listaNombres[100];
-
-func int hola (int x)
+   int: i;
 {
-   if (a > 10)
+   i=j+(k-j*2+j);
+   if ( j == 1)
    {
-      return (x);
+      return (j);
    }
    else
    {
-      return (y);
+      return (j*fact(j-1));
    }
 }
 
-func void hola ()
+func void inicia (int y)
+var
+   int: x;
 {
-   print("Hola.");
-}
-
-{
-   a.nombre = "Juan";
-   listaNombres = "Jose";
-   x = 1;
-   y = 2;
-   z = (x+y+z+a*3)/4;
-   read (A[i+1], B[i+1]);
-   print("hola", "adios", x);
-   for (i = 0 until xyz)
+   x=-1;
+   while (x<11)
    {
-   }
-   A[i+1] = A[i]*i;
-   A[i+1] = hola(x, y)+a[x+z]-5;
-   hola(x,y,z)
-   A=factorial(B);
-   A=fibonacci(B)*4;
-   A=numero();
-   A=Persona.nombre;
-   A=Persona.calcular(edad);
-   while (i < x)
-   {
-   }
-   if (z > x && a < b && c < d) {
-      print("hola mundo",(x+y));
-   }
-   else
-   {
-     read(x);
+      Arreglo[x]=y*x;
    }
 }
 
 main()
-var
-   int: x, y;
-   float: z;
 {
-   a.nombre = "Juan";
-   listaNombres = "Jose";
-   x = 1;
-   y = 2;
-   z = (x+y+z+a*3)/4;
-   read (A[i+1], B[i+1]);
-   print("hola", "adios", x);
-   for (i = 0 until xyz)
+   read (k);
+   j=k*2;
+   i=-1;
+   inicia (k*j-5)
+   while (i>=-1)
    {
-   }
-   A[i+1] = A[i]*i;
-   A[i+1] = hola(x, y)+a[x+z]-5;
-   hola(x,y,z)
-   A=factorial(B);
-   A=fibonacci(B)+C-4;
-   A=numero();
-   A=Persona.nombre;
-   A=Persona.calcular(edad);
-   while (i < x)
-   {
-   }
-   if (z > x && a < b && c < d) {
-      print("hola mundo",(x+y));
-   }
-   else
-   {
-     read(x);
+      print ("resultado", Arreglo [i], fact (i+2));
+      print (Matriz[i][K*2-i]);
    }
 }
