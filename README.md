@@ -18,3 +18,6 @@ Nos enfocamos en la generación de los cuádruplos para las expresiones aritmét
 
 ## Sexto avance (mapa de memoria de ejecución para la máquina virtual y ejecución de expresiones)
 Agregamos los métodos para el manejo de las direcciones virtuales en nuestra clase avail.py, en el cual se pueden generar direcciones globales, locales, temporales y constantes para cada uno de los tipos de variables. También creamos la clase constantes.py para el manejo de las constantes y sus direcciones correspondientes. En la clase de cuadruplos.py, agregamos un método para llenar los cuádruplos pendientes de los saltos como GoTo, GoToF y GoToV.
+
+## Séptimo avance (código de arreglos y ejecución de estatutos)
+Refactorizamos el directorio de procedimientos para crear métodos menos complejos y más limpios que nos permitieran pasarle los datos de la sintaxis, ya que se nos estaba complicando mucho guardarlos de manera correcta en la tabla. Simplificamos el caso de prueba de Archivo.txt con el ejemplo que venía en el ejercicio de repaso para el último examen porque el que diseñamos nosotros estaba demasiado extenso como para revisarlo en cada prueba individual. Cambiamos la declaración de los puntos neurálgicos en la sintaxis con el uso de índices negativos para acceder a datos que se encontraban en posiciones anteriores a su declaración.

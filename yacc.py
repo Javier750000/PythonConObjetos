@@ -132,7 +132,7 @@ def p_listaVarsSimples(p):
     '''
     listaVarsSimples : tipo guardarTipo DOSPUNTOS listaIDsSimples PUNTOYCOMA varsAdicionales
     '''
-    p[0] = p[3]
+    p[0] = p[4]
 
 def p_guardarTipo(p):
     '''
