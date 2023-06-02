@@ -151,7 +151,10 @@ def p_listaIDsSimples(p):
     '''
     print("Variable:", p[1])
     print("")
-    directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
+    if not directorio.existeVariable(p[1],pilaContextos[-1]):
+        directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
+    else:
+        print("La variable " + p[1] + " ya fue declarada previamente")
 
 def p_array(p):
     '''
@@ -225,17 +228,20 @@ def p_asignacion(p):
     asignacion : variable IGUALA hiperexpresion PUNTOYCOMA
                | variable IGUALA CTE_STRING PUNTOYCOMA 
     '''
-    '''
-    valorVariable = p[1]
-    valorHiperexpresion = pilaOperandos.pop()
-    tipoHiperexpresion = pilaTipos.pop()
-    tipoResultado = cuboSemantico.validarTipos(tipoVariable, tipoHiperexpresion, '=')
-    if tipoResultado:
-        cuadruplos.generarCuadruploNuevo('=', valorHiperexpresion, None, valorVariable)
-    else:
-        print(f'Los tipos de la hiperexpresión y de la variable no son compatibles.')
-        print("")
-    '''
+    
+    # valorVariable = p[1]
+    # valorHiperexpresion = pilaOperandos.pop()
+    # tipoHiperexpresion = pilaTipos.pop()
+    # tipoResultado = cuboSemantico.validarTipos(tipoVariable, tipoHiperexpresion, '=')
+    # if tipoResultado:
+    #     cuadruplos.generarCuadruploNuevo('=', valorHiperexpresion, None, valorVariable)
+    # else:
+    #     print(f'Los tipos de la hiperexpresión y de la variable no son compatibles.')
+    #     print("")
+    
+    # current = p[1]
+    # exp = pilaOperadores.pop()
+    # directorio
 
 def p_condicion(p):
     '''

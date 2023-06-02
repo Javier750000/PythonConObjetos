@@ -10,10 +10,20 @@ class Directorio:
         }
 
     def agregarVariables(self, variable, tipo, nombreFuncion):
-        self.tabla[nombreFuncion]["Tabla de variables"][variable] = {
-            "Tipo de la variable": tipo
-        }
+        if variable in self.tabla[nombreFuncion]["Tabla de variables"].keys():
+            print('La variable '+ variable + "ya existe, porfavor renombrala")
+        else:
+            self.tabla[nombreFuncion]["Tabla de variables"][variable] = tipo
 
+    def quitarVariable(self, variable, nombreFuncion):
+        self.tabla[nombreFuncion]["Tabla de variables"].pop(variable)
+    
+    def existeVariable(self, variable, nombreFuncion):
+        if variable in self.tabla[nombreFuncion]["Tabla de variables"].keys():
+            return True
+        else:
+            return False
+            
     def agregarFuncion(self, nombreFuncion, tipoFuncion):
         self.tabla[nombreFuncion] = {
             "Tipo de la funcion": tipoFuncion, "Tabla de variables": {}, "Lista de parámetros": []
@@ -21,3 +31,5 @@ class Directorio:
 
     def agregarParametros(self, tipoParametro, nombreFuncion):
         self.tabla[nombreFuncion]["Lista de parámetros"].append(tipoParametro)
+
+    
