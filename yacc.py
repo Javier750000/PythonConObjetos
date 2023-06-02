@@ -5,6 +5,7 @@ from avail import Avail
 from cuadruplos import Cuadruplos
 from cuboSemantico import CuboSemantico
 from constantes import Constantes
+from pprint import pprint
 
 directorio = Directorio()
 avail = Avail()
@@ -22,7 +23,7 @@ def p_programa(p):
     '''
     programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
     '''
-    print("Directorio:", directorio.tabla)
+    pprint(directorio.tabla, sort_dicts=False)
     print("")
 
     i=1
@@ -105,8 +106,8 @@ def p_agregarParam(p):
     '''
     agregarParam :
     '''
-    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
-    directorio.agregarParametros(p[-2], pilaContextos[-1])
+    #directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
+    directorio.agregarParametros(p[-1], p[-2], pilaContextos[-1])
 
 def p_paramsAdicionales(p):
     '''
@@ -151,10 +152,9 @@ def p_listaIDsSimples(p):
     '''
     print("Variable:", p[1])
     print("")
-    if not directorio.existeVariable(p[1],pilaContextos[-1]):
-        directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
-    else:
-        print("La variable " + p[1] + " ya fue declarada previamente")
+    
+    directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
+    
 
 def p_array(p):
     '''
