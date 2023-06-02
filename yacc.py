@@ -5,6 +5,7 @@ from avail import Avail
 from cuadruplos import Cuadruplos
 from cuboSemantico import CuboSemantico
 from constantes import Constantes
+from pprint import pprint
 
 directorio = Directorio()
 avail = Avail()
@@ -22,7 +23,7 @@ def p_programa(p):
     '''
     programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
     '''
-    print("Directorio:", directorio.tabla)
+    pprint(directorio.tabla, sort_dicts=False)
     print("")
 
     i=1
@@ -105,8 +106,8 @@ def p_agregarParam(p):
     '''
     agregarParam :
     '''
-    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
-    directorio.agregarParametros(p[-2], pilaContextos[-1])
+    #directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
+    directorio.agregarParametros(p[-1], p[-2], pilaContextos[-1])
 
 def p_paramsAdicionales(p):
     '''
@@ -151,7 +152,9 @@ def p_listaIDsSimples(p):
     '''
     print("Variable:", p[1])
     print("")
+    
     directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
+    
 
 def p_array(p):
     '''
@@ -225,17 +228,20 @@ def p_asignacion(p):
     asignacion : variable IGUALA hiperexpresion PUNTOYCOMA
                | variable IGUALA CTE_STRING PUNTOYCOMA 
     '''
-    '''
-    valorVariable = p[1]
-    valorHiperexpresion = pilaOperandos.pop()
-    tipoHiperexpresion = pilaTipos.pop()
-    tipoResultado = cuboSemantico.validarTipos(tipoVariable, tipoHiperexpresion, '=')
-    if tipoResultado:
-        cuadruplos.generarCuadruploNuevo('=', valorHiperexpresion, None, valorVariable)
-    else:
-        print(f'Los tipos de la hiperexpresión y de la variable no son compatibles.')
-        print("")
-    '''
+    
+    # valorVariable = p[1]
+    # valorHiperexpresion = pilaOperandos.pop()
+    # tipoHiperexpresion = pilaTipos.pop()
+    # tipoResultado = cuboSemantico.validarTipos(tipoVariable, tipoHiperexpresion, '=')
+    # if tipoResultado:
+    #     cuadruplos.generarCuadruploNuevo('=', valorHiperexpresion, None, valorVariable)
+    # else:
+    #     print(f'Los tipos de la hiperexpresión y de la variable no son compatibles.')
+    #     print("")
+    
+    # current = p[1]
+    # exp = pilaOperadores.pop()
+    # directorio
 
 def p_condicion(p):
     '''

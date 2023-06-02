@@ -4,7 +4,7 @@ var
    int: Arreglo[10];
    int: Matriz[10][8];
 
-func int fact (int j)
+func int fact (int j, int b)
 var
    int: i;
 {
