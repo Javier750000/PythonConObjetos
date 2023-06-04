@@ -1,4 +1,3 @@
-
 from directorioProcedimientos import Directorio
 
 class DirectorioClases:
@@ -20,3 +19,4 @@ class DirectorioClases:
     
     def addMethods(self, id, tablaFuncs):
         self.tablaClases[id]['atributos'] = tablaFuncs
+        

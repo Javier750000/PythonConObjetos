@@ -28,5 +28,3 @@ class Directorio:
             raise Exception('La función '+ nombreFuncion + " ya tiene declarado un parámetro con nombre " + nombreParametro + ". Favor de renombrarlo.")
         else:
             self.tabla[nombreFuncion]["listaParametros"][nombreParametro] = tipoParametro
-
-    

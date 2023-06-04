@@ -21,3 +21,6 @@ Agregamos los métodos para el manejo de las direcciones virtuales en nuestra cl
 
 ## Séptimo avance (código de arreglos y ejecución de estatutos)
 Refactorizamos el directorio de procedimientos para crear métodos menos complejos y más limpios que nos permitieran pasarle los datos de la sintaxis, ya que se nos estaba complicando mucho guardarlos de manera correcta en la tabla. Simplificamos el caso de prueba de Archivo.txt con el ejemplo que venía en el ejercicio de repaso para el último examen porque el que diseñamos nosotros estaba demasiado extenso como para revisarlo en cada prueba individual. Cambiamos la declaración de los puntos neurálgicos en la sintaxis con el uso de índices negativos para acceder a datos que se encontraban en posiciones anteriores a su declaración.
+
+## Octavo avance (código y ejecución de aplicación particular)
+Realizamos las validaciones en el directorio de procedimientos para que no se puedan declararar más de una vez las funciones, las variables dentro del mismo contexto y los parámetros dentro de la misma función. De igual manera, realizamos las validaciones para las variables y las funciones que no han sido declaradas. Se modificó el código de los puntos neurálgicos para la generación de los cuádruplos de las expresiones aritméticas, pero todavía se siguen pasando los datos de manera incorrecta.

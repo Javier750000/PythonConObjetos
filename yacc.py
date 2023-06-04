@@ -106,7 +106,7 @@ def p_agregarParam(p):
     '''
     agregarParam :
     '''
-    #directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
+    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
     directorio.agregarParametros(p[-1], p[-2], pilaContextos[-1])
 
 def p_paramsAdicionales(p):
@@ -140,6 +140,7 @@ def p_guardarTipo(p):
     guardarTipo : 
     '''
     directorio.tipo = p[-1]
+    pilaTipos.append(p[-1])
 
 def p_listaVarsCompuestas(p):
     '''
@@ -310,8 +311,7 @@ def p_cuadruploEscritura(p):
     '''
     cuadruploEscritura : empty
     '''
-    listaOperandos = pilaOperandos.pop()
-    cuadruplos.generarCuadruploNuevo('print', None, None, listaOperandos)
+    cuadruplos.generarCuadruploNuevo('print', None, None, pilaOperandos.pop())
 
 def p_lectura(p):
     '''
@@ -350,9 +350,17 @@ def p_cicloWhile(p):
 
 def p_llamada(p):
     '''
-    llamada : ID PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
+    llamada : ID existeFuncion PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
             | ID PUNTO ID PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
     '''
+    p[0] = p[1]
+
+def p_existeFuncion(p):
+    '''
+    existeFuncion : 
+    '''
+    if p[-1] not in directorio.tabla.keys():
+        raise Exception("La función "+ p[-1] + " no existe. Favor de declararla.")
 
 def p_listaHiperexpresiones(p):
     '''
@@ -370,6 +378,8 @@ def p_variable(p):
     variable : ID arrayVariable
              | ID PUNTO ID
     '''
+    if p[1] not in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys() and p[1] not in directorio.tabla["global"]["tablaVariables"].keys():
+        raise Exception("La variable "+ p[1] + " no existe. Favor de declararla.")
     p[0] = p[1]
 
 def p_arrayVariable(p):
@@ -386,8 +396,15 @@ def p_matrixVariable(p):
 
 def p_hiperexpresion(p):
     '''
-    hiperexpresion : superexpresion cuadruploHiperexpresion andOr
+    hiperexpresion : superexpresion validacionHiperexpresion andOr
     '''
+
+def p_validacionHiperexpresion(p):
+    '''
+    validacionHiperexpresion : empty
+    '''
+    if pilaOperadores[-1] == '&&' or pilaOperadores[-1] == '||':
+        agregarCuadruplo()
 
 def p_andOr(p):
     '''
@@ -400,12 +417,19 @@ def p_cuadruploHiperexpresion(p):
     '''
     cuadruploHiperexpresion : empty
     '''
-    agregarCuadruplo(['&&', '||'])
+    pilaOperadores.append(p[-1])
 
 def p_superexpresion(p):
     '''
-    superexpresion : exp cuadruploSuperexpresion comparaciones
+    superexpresion : exp validacionSuperexpresion comparaciones
     '''
+
+def p_validacionSuperexpresion(p):
+    '''
+    validacionSuperexpresion : empty
+    '''
+    if pilaOperadores[-1] == '>' or pilaOperadores[-1] == '>=' or pilaOperadores[-1] == '<' or pilaOperadores[-1] == '<=' or pilaOperadores[-1] == '==' or pilaOperadores[-1] == '<>':
+        agregarCuadruplo()
 
 def p_comparaciones(p):
     '''
@@ -422,12 +446,19 @@ def p_cuadruploSuperexpresion(p):
     '''
     cuadruploSuperexpresion : empty
     '''
-    agregarCuadruplo(['>', '>=', '<', '<=', '==', '<>'])
+    pilaOperadores.append(p[-1])
 
 def p_exp(p):
     '''
-    exp : termino cuadruploExpresion sumaRestaExpresiones
+    exp : termino validacionExp sumaRestaExpresiones
     '''
+
+def p_validacionExp(p):
+    '''
+    validacionExp : empty
+    '''
+    if pilaOperadores[-1] == '+' or pilaOperadores[-1] == '-':
+        agregarCuadruplo()
 
 def p_sumaRestaExpresiones(p):
     '''
@@ -440,12 +471,19 @@ def p_cuadruploExpresion(p):
     '''
     cuadruploExpresion : empty
     '''
-    agregarCuadruplo(['+', '-'])
+    pilaOperadores.append(p[-1])
 
 def p_termino(p):
     '''
-    termino : factor cuadruploTermino multiplicacionDivisionTerminos
+    termino : factor validacionTermino multiplicacionDivisionTerminos
     '''
+
+def p_validacionTermino(p):
+    '''
+    validacionTermino : empty
+    '''
+    if pilaOperadores[-1] == '*' or pilaOperadores[-1] == '/':
+        agregarCuadruplo()
 
 def p_multiplicacionDivisionTerminos(p):
     '''
@@ -454,29 +492,28 @@ def p_multiplicacionDivisionTerminos(p):
                                    | empty
     '''
 
-
 def p_cuadruploTermino(p):
     '''
     cuadruploTermino : empty
     '''
-    agregarCuadruplo(['*', '/'])
+    pilaOperadores.append(p[-1])
 
 
-def agregarCuadruplo(listaOperadores):
-    if pilaOperadores and pilaOperadores[-1] in listaOperadores:
-        valorDer = pilaOperandos.pop()
-        tipoDer = pilaTipos.pop()
-        valorIzq = pilaOperandos.pop()
-        tipoIzq = pilaTipos.pop()
-        operador = pilaOperadores.pop()
-        tipoResultado = cuboSemantico.validarTipos(tipoIzq, tipoDer, operador)
-        if tipoResultado:
-            temporal = avail.generarTemporalNuevo(tipoResultado)
-            cuadruplos.generarCuadruploNuevo(operador, valorIzq, valorDer, temporal)
-            pilaOperandos.append(temporal)
-        else:
-            print(f'Los tipos de los operandos no son compatibles.')
-            print("")
+def agregarCuadruplo():
+    valorDer = pilaOperandos.pop()
+    tipoDer = pilaTipos.pop()
+    valorIzq = pilaOperandos.pop()
+    tipoIzq = pilaTipos.pop()
+    operador = pilaOperadores.pop()
+    tipoResultado = cuboSemantico.validarTipos(tipoIzq, tipoDer, operador)
+    if tipoResultado:
+        temporal = avail.generarTemporalNuevo(tipoResultado)
+        cuadruplos.generarCuadruploNuevo(operador, valorIzq, valorDer, temporal)
+        pilaOperandos.append(temporal)
+        pilaTipos.append(tipoResultado)
+    else:
+        print(f'Los tipos de los operandos no son compatibles.')
+        print("")
 
 def p_factor(p):
     '''

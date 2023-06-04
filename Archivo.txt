@@ -9,7 +9,7 @@ var
    int: i;
 {
    i=j+(k-j*2+j);
-   if ( j == 1)
+   if (j == 1)
    {
       return (j);
    }
@@ -32,13 +32,13 @@ var
 
 main()
 {
-   read (k);
+   read(k);
    j=k*2;
    i=-1;
-   inicia (k*j-5)
+   inicia(k*j-5)
    while (i>=-1)
    {
-      print ("resultado", Arreglo [i], fact (i+2));
-      print (Matriz[i][K*2-i]);
+      print ("resultado", Arreglo [i], fact(i+2));
+      print (Matriz[i][k*2-i]);
    }
 }
