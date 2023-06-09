@@ -14,6 +14,7 @@ palabrasReservadas = {
     'int': 'INT',
     'float': 'FLOAT',
     'char': 'CHAR',
+    'bool': 'BOOL',
     'void': 'VOID',
     'return': 'RETURN',
     'for': 'FOR',
@@ -47,10 +48,11 @@ tokens = [
         'PUNTOYCOMA',
         'DOSPUNTOS',
         'PUNTO',
-        'ID', 
-        'CTE_I', 
-        'CTE_F',
-        'CTE_STRING'] + list(palabrasReservadas.values())
+        'CTE_BOOL',
+        'CTE_F', 
+        'CTE_I',
+        'CTE_STRING',
+        'ID'] + list(palabrasReservadas.values())
 
 t_SUMA = r'\+'
 t_RESTA = r'-'
@@ -76,24 +78,28 @@ t_PUNTOYCOMA = r';'
 t_DOSPUNTOS = r':'
 t_PUNTO = r'.'
 
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = palabrasReservadas.get(t.value, 'ID')
-    return t
-
-def t_CTE_I(t):
-    r'\d+'
-    t.value = int(t.value)    
+def t_CTE_BOOL(t):
+    r'true|false'
     return t
 
 def t_CTE_F(t):
-    r'\d+.\d+'
+    r'-?\d+.\d+'
     t.value = float(t.value)    
+    return t
+
+def t_CTE_I(t):
+    r'-?\d+'
+    t.value = int(t.value)    
     return t
 
 def t_CTE_STRING(t):
     r'\"[a-zA-Z0-9_!\s\.]*\"'
     t.value = t.value[1:-1]
+    return t
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = palabrasReservadas.get(t.value, 'ID')
     return t
 
 def t_númeroLínea(t):

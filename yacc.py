@@ -23,13 +23,29 @@ def p_programa(p):
     '''
     programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
     '''
+    print("Directorio: ")
     pprint(directorio.tabla, sort_dicts=False)
     print("")
 
+    print("Tabla de constantes: ")
+    pprint(constantes.tabla, sort_dicts=False)
+    print("")
+
+    print("Cuádruplos: ")
     i=1
     for cuadruplo in cuadruplos.listaCuadruplos:
         print(f'{i}: {cuadruplo}')
         i+=1;
+    print("")
+
+    print("Pila de operandos: ")
+    print(pilaOperandos)
+    print("")
+    print("Pila de tipos: ")
+    print(pilaTipos)
+    print("")
+    print("Pila de operadores: ")
+    print(pilaOperadores)
     print("")
 
 def p_inicializarDirectorio(p):
@@ -140,7 +156,6 @@ def p_guardarTipo(p):
     guardarTipo : 
     '''
     directorio.tipo = p[-1]
-    pilaTipos.append(p[-1])
 
 def p_listaVarsCompuestas(p):
     '''
@@ -198,6 +213,7 @@ def p_tipo(p):
     tipo : INT
          | FLOAT
          | CHAR
+         | BOOL
     '''
     p[0] = p[1]
 
@@ -226,23 +242,18 @@ def p_estatuto(p):
 
 def p_asignacion(p):
     '''
-    asignacion : variable IGUALA hiperexpresion PUNTOYCOMA
-               | variable IGUALA CTE_STRING PUNTOYCOMA 
+    asignacion : variable IGUALA hiperexpresion cuadruploAsignacion PUNTOYCOMA
     '''
-    
-    # valorVariable = p[1]
-    # valorHiperexpresion = pilaOperandos.pop()
-    # tipoHiperexpresion = pilaTipos.pop()
-    # tipoResultado = cuboSemantico.validarTipos(tipoVariable, tipoHiperexpresion, '=')
-    # if tipoResultado:
-    #     cuadruplos.generarCuadruploNuevo('=', valorHiperexpresion, None, valorVariable)
-    # else:
-    #     print(f'Los tipos de la hiperexpresión y de la variable no son compatibles.')
-    #     print("")
-    
-    # current = p[1]
-    # exp = pilaOperadores.pop()
-    # directorio
+
+def p_cuadruploAsignacion(p):
+    '''
+    cuadruploAsignacion : empty
+    '''
+    if directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-3]] != pilaTipos[-1]:
+        raise Exception("A la variable «"+ p[-3] + "» no se le puede asignar ese tipo de dato.")
+    else:
+        cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, p[-3])
+        pilaTipos.pop()
 
 def p_condicion(p):
     '''
@@ -298,12 +309,11 @@ def p_escritura(p):
 def p_listaExpresiones(p):
     '''
     listaExpresiones : hiperexpresion cuadruploEscritura expresionesAdicionales
-                     | CTE_STRING cuadruploEscritura expresionesAdicionales
     '''
 
 def p_expresionesAdicionales(p):
     '''
-    expresionesAdicionales : COMA cuadruploEscritura listaExpresiones
+    expresionesAdicionales : COMA listaExpresiones
                            | empty
     '''
 
@@ -312,24 +322,16 @@ def p_cuadruploEscritura(p):
     cuadruploEscritura : empty
     '''
     cuadruplos.generarCuadruploNuevo('print', None, None, pilaOperandos.pop())
+    pilaTipos.pop()
 
 def p_lectura(p):
     '''
     lectura : READ PARENTESISINICIAL listaVariables PARENTESISFINAL PUNTOYCOMA
     '''
 
-    '''
-    for variable in p[3]:
-        cuadruplos.generarCuadruploNuevo('read', None, None, variable)
-    '''
-
 def p_listaVariables(p):
     '''
-    listaVariables : variable variablesAdicionales
-    '''
-
-    '''
-    p[0] = [p[1]] + p[2]
+    listaVariables : variable cuadruploLectura variablesAdicionales
     '''
 
 def p_variablesAdicionales(p):
@@ -337,6 +339,13 @@ def p_variablesAdicionales(p):
     variablesAdicionales : COMA listaVariables
                          | empty
     '''
+
+def p_cuadruploLectura(p):
+    '''
+    cuadruploLectura : empty
+    '''
+    cuadruplos.generarCuadruploNuevo('read', None, None, pilaOperandos.pop())
+    pilaTipos.pop()
 
 def p_cicloFor(p):
     '''
@@ -360,7 +369,7 @@ def p_existeFuncion(p):
     existeFuncion : 
     '''
     if p[-1] not in directorio.tabla.keys():
-        raise Exception("La función "+ p[-1] + " no existe. Favor de declararla.")
+        raise Exception("La función «"+ p[-1] + "» no existe. Favor de declararla.")
 
 def p_listaHiperexpresiones(p):
     '''
@@ -375,12 +384,20 @@ def p_hiperexpresionesAdicionales(p):
 
 def p_variable(p):
     '''
-    variable : ID arrayVariable
+    variable : ID insertarAPilas arrayVariable
              | ID PUNTO ID
     '''
-    if p[1] not in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys() and p[1] not in directorio.tabla["global"]["tablaVariables"].keys():
-        raise Exception("La variable "+ p[1] + " no existe. Favor de declararla.")
     p[0] = p[1]
+
+def p_insertarAPilas(p):
+    '''
+    insertarAPilas : empty
+    '''
+    if p[-1] not in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys() and p[-1] not in directorio.tabla["global"]["tablaVariables"].keys():
+        raise Exception("La variable «"+ p[-1] + "» no existe. Favor de declararla.")
+    else:
+        pilaOperandos.append(p[-1])
+        pilaTipos.append(directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-1]])
 
 def p_arrayVariable(p):
     '''
@@ -403,8 +420,9 @@ def p_validacionHiperexpresion(p):
     '''
     validacionHiperexpresion : empty
     '''
-    if pilaOperadores[-1] == '&&' or pilaOperadores[-1] == '||':
-        agregarCuadruplo()
+    if len(pilaOperadores) > 0:
+        if pilaOperadores[-1] == '&&' or pilaOperadores[-1] == '||':
+            agregarCuadruplo()
 
 def p_andOr(p):
     '''
@@ -428,17 +446,18 @@ def p_validacionSuperexpresion(p):
     '''
     validacionSuperexpresion : empty
     '''
-    if pilaOperadores[-1] == '>' or pilaOperadores[-1] == '>=' or pilaOperadores[-1] == '<' or pilaOperadores[-1] == '<=' or pilaOperadores[-1] == '==' or pilaOperadores[-1] == '<>':
-        agregarCuadruplo()
+    if len(pilaOperadores) > 0:
+        if pilaOperadores[-1] == '>' or pilaOperadores[-1] == '>=' or pilaOperadores[-1] == '<' or pilaOperadores[-1] == '<=' or pilaOperadores[-1] == '==' or pilaOperadores[-1] == '<>':
+            agregarCuadruplo()
 
 def p_comparaciones(p):
     '''
-    comparaciones : MAYORQUE cuadruploSuperexpresion exp
-                  | MAYORIGUALQUE cuadruploSuperexpresion exp
-                  | MENORQUE cuadruploSuperexpresion exp
-                  | MENORIGUALQUE cuadruploSuperexpresion exp
-                  | EQUIVALENTE cuadruploSuperexpresion exp
-                  | DIFERENTEDE cuadruploSuperexpresion exp
+    comparaciones : MAYORQUE cuadruploSuperexpresion superexpresion
+                  | MAYORIGUALQUE cuadruploSuperexpresion superexpresion
+                  | MENORQUE cuadruploSuperexpresion superexpresion
+                  | MENORIGUALQUE cuadruploSuperexpresion superexpresion
+                  | EQUIVALENTE cuadruploSuperexpresion superexpresion
+                  | DIFERENTEDE cuadruploSuperexpresion superexpresion
                   | empty
     '''
 
@@ -457,8 +476,9 @@ def p_validacionExp(p):
     '''
     validacionExp : empty
     '''
-    if pilaOperadores[-1] == '+' or pilaOperadores[-1] == '-':
-        agregarCuadruplo()
+    if len(pilaOperadores) > 0:
+        if pilaOperadores[-1] == '+' or pilaOperadores[-1] == '-':
+            agregarCuadruplo()
 
 def p_sumaRestaExpresiones(p):
     '''
@@ -482,8 +502,9 @@ def p_validacionTermino(p):
     '''
     validacionTermino : empty
     '''
-    if pilaOperadores[-1] == '*' or pilaOperadores[-1] == '/':
-        agregarCuadruplo()
+    if len(pilaOperadores) > 0:
+        if pilaOperadores[-1] == '*' or pilaOperadores[-1] == '/':
+            agregarCuadruplo()
 
 def p_multiplicacionDivisionTerminos(p):
     '''
@@ -498,7 +519,6 @@ def p_cuadruploTermino(p):
     '''
     pilaOperadores.append(p[-1])
 
-
 def agregarCuadruplo():
     valorDer = pilaOperandos.pop()
     tipoDer = pilaTipos.pop()
@@ -512,7 +532,7 @@ def agregarCuadruplo():
         pilaOperandos.append(temporal)
         pilaTipos.append(tipoResultado)
     else:
-        print(f'Los tipos de los operandos no son compatibles.')
+        raise Exception("Los tipos de los operandos no son compatibles.")
         print("")
 
 def p_factor(p):
@@ -521,9 +541,7 @@ def p_factor(p):
 	       | var_cte
            | variable
            | llamada
-           | empty
     '''
-    pilaOperandos.append(p[1])
 
 def p_agregarParentesis(p):
     '''
@@ -539,10 +557,44 @@ def p_eliminarParentesis(p):
 
 def p_var_cte(p):
     '''
-    var_cte : CTE_I
-	        | CTE_F
+    var_cte : CTE_I insertarEnteros
+	        | CTE_F insertarFlotantes
+            | CTE_STRING insertarStrings
+            | CTE_BOOL insertarBooleanos
     '''
     p[0] = p[1]
+
+def p_insertarEnteros(p):
+    '''
+    insertarEnteros : empty
+    '''
+    constantes.agregarConstante(p[-1], 'int')
+    pilaOperandos.append(p[-1])
+    pilaTipos.append(constantes.tabla[p[-1]])
+
+def p_insertarFlotantes(p):
+    '''
+    insertarFlotantes : empty
+    '''
+    constantes.agregarConstante(p[-1], 'float')
+    pilaOperandos.append(p[-1])
+    pilaTipos.append(constantes.tabla[p[-1]])
+
+def p_insertarStrings(p):
+    '''
+    insertarStrings : empty
+    '''
+    constantes.agregarConstante(p[-1], 'char')
+    pilaOperandos.append(p[-1])
+    pilaTipos.append(constantes.tabla[p[-1]])
+
+def p_insertarBooleanos(p):
+    '''
+    insertarBooleanos : empty
+    '''
+    constantes.agregarConstante(p[-1], 'bool')
+    pilaOperandos.append(p[-1])
+    pilaTipos.append(constantes.tabla[p[-1]])
 
 def p_empty(p):
     'empty :'

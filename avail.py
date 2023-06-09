@@ -35,7 +35,7 @@ class Avail:
         if self.table['temporales'][tipo][0] > self.table['temporales'][tipo][2]:
             print(f'Ya no hay espacio en memoria para más variables.')
         else:
-            arrTemporales = (self.table['temporales'][tipo][0], tipo)
+            arrTemporales = (self.table['temporales'][tipo][0])
             self.table['temporales'][tipo][0] += 1
             return arrTemporales
 

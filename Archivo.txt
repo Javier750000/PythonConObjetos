@@ -1,44 +1,8 @@
 program patito;
-var 
-   int: i, j, k;
-   int: Arreglo[10];
-   int: Matriz[10][8];
-
-func int fact (int j, int b)
 var
-   int: i;
-{
-   i=j+(k-j*2+j);
-   if (j == 1)
-   {
-      return (j);
-   }
-   else
-   {
-      return (j*fact(j-1));
-   }
-}
-
-func void inicia (int y)
-var
-   int: x;
-{
-   x=-1;
-   while (x<11)
-   {
-      Arreglo[x]=y*x;
-   }
-}
+   int: a, b;
 
 main()
 {
-   read(k);
-   j=k*2;
-   i=-1;
-   inicia(k*j-5)
-   while (i>=-1)
-   {
-      print ("resultado", Arreglo [i], fact(i+2));
-      print (Matriz[i][k*2-i]);
-   }
+   print(1 + 3 * a / b - 2 < b && 20 > a);
 }
