@@ -9,7 +9,7 @@ class Avail:
 
     def generarDireccionNueva(self, tipo, contexto):
         if self.table[contexto][tipo][0] > self.table[contexto][tipo][2]:
-            print(f'Ya no hay espacio en memoria para más variables.')
+            raise Exception("Ya no hay espacio en memoria para más variables.")
         else:
             direccionActual = self.table[contexto][tipo][0]
             self.table[contexto][tipo][0] += 1
@@ -17,7 +17,7 @@ class Avail:
 
     def generarDireccionesNueva(self, tipo, contexto, tamaño):
         if self.table[contexto][tipo][0] + tamaño - 1 > self.table[contexto][tipo][2]:
-            print(f'Ya no hay espacio en memoria para más variables.')
+            raise Exception("Ya no hay espacio en memoria para más variables.")
         else:
             direccionActual = self.table[contexto][tipo][0]
             self.table[contexto][tipo][0] += tamaño
@@ -25,7 +25,7 @@ class Avail:
 
     def generarGlobalNuevo(self, tipo):
         if self.table['globales'][tipo][0] > self.table['globales'][tipo][2]:
-            print(f'Ya no hay espacio en memoria para más variables.')
+            raise Exception("Ya no hay espacio en memoria para más variables.")
         else:
             direccionGlobal = self.table['globales'][tipo][0]
             self.table['globales'][tipo][0] += 1
@@ -33,11 +33,11 @@ class Avail:
 
     def generarTemporalNuevo(self, tipo):
         if self.table['temporales'][tipo][0] > self.table['temporales'][tipo][2]:
-            print(f'Ya no hay espacio en memoria para más variables.')
+            raise Exception("Ya no hay espacio en memoria para más variables.")
         else:
-            arrTemporales = (self.table['temporales'][tipo][0])
+            direccionTemporal = (self.table['temporales'][tipo][0])
             self.table['temporales'][tipo][0] += 1
-            return arrTemporales
+            return direccionTemporal
 
     def reinicializar(self):
         self.table['locales']['int'][0] = self.table['locales']['int'][1]

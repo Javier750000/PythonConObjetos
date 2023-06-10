@@ -1,6 +1,6 @@
 class Cuadruplos:
     def __init__(self):
-        self.contador = 0
+        self.contador = 1
         self.listaCuadruplos = []
 
     def generarCuadruploNuevo(self, operador, operandoIzq, operandoDer, resultado):
@@ -8,5 +8,5 @@ class Cuadruplos:
         self.listaCuadruplos.append(cuadruplo)
         self.contador += 1
 
-    def llenarCuadruploPendiente(self, cuadruploPendiente, indice, valor):
-        self.listaCuadruplos[cuadruploPendiente][indice] = valor
+    def llenarCuadruploPendiente(self, cuadruploPendiente, valor):
+        self.listaCuadruplos[cuadruploPendiente-1][3] = valor

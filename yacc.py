@@ -15,8 +15,8 @@ constantes = Constantes()
 pilaOperandos = []
 pilaOperadores = []
 pilaTipos = []
-pilaSaltos = []
 pilaContextos = []
+pilaSaltos = []
 pilaDimensiones = []
 
 def p_programa(p):
@@ -46,6 +46,9 @@ def p_programa(p):
     print("")
     print("Pila de operadores: ")
     print(pilaOperadores)
+    print("")
+    print("Pila de saltos: ")
+    print(pilaSaltos)
     print("")
 
 def p_inicializarDirectorio(p):
@@ -257,14 +260,41 @@ def p_cuadruploAsignacion(p):
 
 def p_condicion(p):
     '''
-    condicion : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL bloque bloqueCondicional
+    condicion : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL cuadruploCondicion bloque bloqueCondicional llenarSaltoPendiente
     '''
+
+def p_cuadruploCondicion(p):
+    '''
+    cuadruploCondicion : empty
+    '''
+    if pilaTipos.pop() != 'bool':
+        raise Exception("Las condiciones deben ser booleanas.")
+    else:
+        resultado = pilaOperandos.pop()
+        cuadruplos.generarCuadruploNuevo('GoToF', resultado, None, None)
+        pilaSaltos.append(cuadruplos.contador-1)
 
 def p_bloqueCondicional(p):
     '''
-    bloqueCondicional : ELSE bloque
+    bloqueCondicional : ELSE cuadruploElse bloque
                       | empty
     '''
+
+def p_cuadruploElse(p):
+    '''
+    cuadruploElse : empty
+    '''
+    cuadruplos.generarCuadruploNuevo('GoTo', None, None, None)
+    falso = pilaSaltos.pop()
+    pilaSaltos.append(cuadruplos.contador-1)
+    cuadruplos.llenarCuadruploPendiente(falso, cuadruplos.contador)
+
+def p_llenarSaltoPendiente(p):
+    '''
+    llenarSaltoPendiente : empty
+    '''
+    cuadruploPendiente = pilaSaltos.pop()
+    cuadruplos.llenarCuadruploPendiente(cuadruploPendiente, cuadruplos.contador)
 
 def p_bloqueFuncional(p):
     '''
