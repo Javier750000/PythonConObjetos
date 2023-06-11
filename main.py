@@ -1,7 +1,10 @@
 from yacc import parser
 
 def main():
-    archivo = open('whileTest.txt')
+    print("Escriba el nombre del archivo de prueba.")
+    nombreArchivo = input()
+    print("")
+    archivo = open(nombreArchivo)
     datos = archivo.read()
     archivo.close()
     parser.parse(datos)

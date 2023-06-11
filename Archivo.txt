@@ -4,17 +4,19 @@ var
 
 main()
 {
-   if (A>B+C)
+   if (A*B+C>D-E)
    {
-      B=C-A;
-      if (A<C+D)
+      B=C+D*C;
+      print(B, A+B);
+      if (A>B)
       {
-         B=D+A;
+         C=D+E;
       }
    }
    else
    {
-      C=A+B;
+      A=B+C;
+      print(A);
    }
-   A=A*B;
+   C=D*E;
 }
