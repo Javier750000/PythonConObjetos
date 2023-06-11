@@ -1,7 +1,7 @@
 from yacc import parser
 
 def main():
-    archivo = open('Archivo.txt')
+    archivo = open('whileTest.txt')
     datos = archivo.read()
     archivo.close()
     parser.parse(datos)

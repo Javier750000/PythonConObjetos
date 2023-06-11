@@ -384,8 +384,31 @@ def p_cicloFor(p):
 
 def p_cicloWhile(p):
     '''
-    cicloWhile : WHILE PARENTESISINICIAL hiperexpresion PARENTESISFINAL bloque
+    cicloWhile : WHILE PARENTESISINICIAL hiperexpresion PARENTESISFINAL cuadruploCicloWhile bloque llenarCuadruploPendienteCiclo
     '''
+
+def p_cuadruploCicloWhile(p):
+    '''
+    cuadruploCicloWhile : empty
+    '''
+    pilaSaltos.append(cuadruplos.contador)
+    if pilaTipos.pop() != 'bool':
+        raise Exception("Las condiciones deben ser booleanas.")
+    else:
+        operando = pilaOperandos.pop()
+        cuadruplos.generarCuadruploNuevo('GoToF', operando, None, None)
+        pilaSaltos.append(cuadruplos.contador-1)
+
+def p_llenarCuadruploPendienteCiclo(p):
+    '''
+    llenarCuadruploPendienteCiclo : empty
+    '''
+    pendiente = pilaSaltos.pop()
+    returnCiclo = pilaSaltos.pop()
+    cuadruplos.generarCuadruploNuevo('GoTo', returnCiclo, None, None)
+    cuadruplos.llenarCuadruploPendiente(pendiente, cuadruplos.contador)
+
+
 
 def p_llamada(p):
     '''
