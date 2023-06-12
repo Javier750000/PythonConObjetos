@@ -24,3 +24,6 @@ Refactorizamos el directorio de procedimientos para crear métodos menos complej
 
 ## Octavo avance (código y ejecución de aplicación particular)
 Realizamos las validaciones en el directorio de procedimientos para que no se puedan declararar más de una vez las funciones, las variables dentro del mismo contexto y los parámetros dentro de la misma función. De igual manera, realizamos las validaciones para las variables y las funciones que no han sido declaradas. Se modificó el código de los puntos neurálgicos para la generación de los cuádruplos de las expresiones aritméticas, pero todavía se siguen pasando los datos de manera incorrecta.
+
+## Noveno avance
+Agregamos los puntos neurálgicos para generar los cuádruplos de las expresiones aritméticas, los estatutos lineales y los estatutos condicionales (if...else y while). Todos los cuádruplos anteriores ya se generan correctamente. Refactorizamos la tabla de constantes para que fuera menos compleja y ya se hace un uso correcto de ella. Modificamos el cubo semántico para que volviera a hacer uso de texto en lugar de enteros porque estamos guardando los tipos de los operandos como texto en las pilas, por lo que el cubo no estaba funcionando anteriormente.
