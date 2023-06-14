@@ -1,22 +1,38 @@
 program patito;
-var
-   int: A, B, C, D, E;
+var 
+   int: i, j, k;
 
-main()
+func int fact (int j, int k, int l, int m)
+var
+   int: i, z, y, x, w, v;
 {
-   if (A*B+C>D-E)
+   i=j+(k-j*2+j);
+   if (j == 1)
    {
-      B=C+D*C;
-      print(B, A+B);
-      if (A>B)
-      {
-         C=D+E;
-      }
+      return (j);
    }
    else
    {
-      A=B+C;
-      print(A);
+      return (j*fact(j - 1));
    }
-   C=D*E;
+}
+
+func int facta (int j, int k)
+var
+   int: i, a, b, c, d, e, f, g, h;
+{
+   i=j+(k-j*2+j);
+   if (j == 1)
+   {
+      return (j);
+   }
+   else
+   {
+      return (j*fact(j - 1));
+   }
+}
+
+main()
+{
+
 }

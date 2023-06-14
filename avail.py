@@ -15,7 +15,7 @@ class Avail:
             self.table[contexto][tipo][0] += 1
             return direccionActual
 
-    def generarDireccionesNueva(self, tipo, contexto, tamaño):
+    def generarDireccionesNuevas(self, tipo, contexto, tamaño):
         if self.table[contexto][tipo][0] + tamaño - 1 > self.table[contexto][tipo][2]:
             raise Exception("Ya no hay espacio en memoria para más variables.")
         else:

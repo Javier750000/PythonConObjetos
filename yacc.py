@@ -21,7 +21,7 @@ pilaDimensiones = []
 
 def p_programa(p):
     '''
-    programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL vars2 bloque
+    programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA cuadruploMain clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL saltoMain vars2 bloque
     '''
     print("Directorio: ")
     pprint(directorio.tabla, sort_dicts=False)
@@ -57,6 +57,13 @@ def p_inicializarDirectorio(p):
     '''
     directorio.contextoGlobal()
     pilaContextos.append("global")
+
+def p_cuadruploMain(p):
+    '''
+    cuadruploMain : empty
+    '''
+    cuadruplos.generarCuadruploNuevo('GoTo', None, None, None)
+    pilaSaltos.append(cuadruplos.contador-1)
 
 def p_clases(p):
     '''
@@ -94,12 +101,12 @@ def p_funciones(p):
 
 def p_funcionSimple(p):
     '''
-    funcionSimple : FUNC tipo ID agregarFuncion PARENTESISINICIAL param PARENTESISFINAL vars2 bloqueFuncional eliminarContexto funciones
+    funcionSimple : FUNC tipo ID agregarFuncion PARENTESISINICIAL param PARENTESISFINAL contadorParametros vars2 contadorLocales contadorCuadruplos bloqueFuncional terminarFuncion eliminarContexto funciones
     '''
 
 def p_funcionVoid(p):
     '''
-    funcionVoid : FUNC VOID ID agregarFuncion PARENTESISINICIAL param PARENTESISFINAL vars2 bloque eliminarContexto funciones
+    funcionVoid : FUNC VOID ID agregarFuncion PARENTESISINICIAL param PARENTESISFINAL contadorParametros vars2 contadorLocales contadorCuadruplos bloque terminarFuncion eliminarContexto funciones
     '''
 
 def p_agregarFuncion(p):
@@ -108,12 +115,26 @@ def p_agregarFuncion(p):
     '''
     directorio.agregarFuncion(p[-1], p[-2])
     pilaContextos.append(p[-1])
+    directorio.contadorParametros = 0
+    directorio.reinicializarContadorLocales()
+    avail.reinicializar()
 
 def p_eliminarContexto(p):
     '''
     eliminarContexto : 
     '''
     pilaContextos.pop()
+
+def p_terminarFuncion(p):
+    '''
+    terminarFuncion : empty
+    '''
+    directorio.tabla[pilaContextos[-1]]["tablaVariables"].clear()
+    cuadruplos.generarCuadruploNuevo('EndFunc', None, None, None)
+    print("Número de temporales:")
+    directorio.temporales = avail.regresarDireccionesOcupadas('temporales')
+    print(directorio.temporales)
+    print("")
 
 def p_param(p):
     '''
@@ -127,12 +148,39 @@ def p_agregarParam(p):
     '''
     directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
     directorio.agregarParametros(p[-1], p[-2], pilaContextos[-1])
+    directorio.contadorParametros+=1;
 
 def p_paramsAdicionales(p):
     '''
     paramsAdicionales : COMA param
                       | empty
     '''
+
+def p_contadorParametros(p):
+    '''
+    contadorParametros : empty
+    '''
+    print("La función tiene el siguiente número de parámetros:")
+    print(directorio.contadorParametros)
+    print("")
+    directorio.agregarCantidadParametros(pilaContextos[-1])
+
+def p_contadorLocales(p):
+    '''
+    contadorLocales : empty
+    '''
+    print("La función tiene el siguiente número de variables locales:")
+    print(directorio.contadorLocales)
+    print("")
+
+def p_contadorCuadruplos(p):
+    '''
+    contadorCuadruplos : empty
+    '''
+    directorio.contador = cuadruplos.contador
+    print("La función empieza en el cuádruplo siguiente:")
+    print(directorio.contador)
+    print("")
 
 def p_vars2(p):
     '''
@@ -173,7 +221,7 @@ def p_listaIDsSimples(p):
     print("")
     
     directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
-    
+    directorio.actualizarContadorLocales(directorio.tipo)
 
 def p_array(p):
     '''
@@ -219,6 +267,13 @@ def p_tipo(p):
          | BOOL
     '''
     p[0] = p[1]
+
+def p_saltoMain(p):
+    '''
+    saltoMain : empty
+    '''
+    cuadruploMain = pilaSaltos.pop()
+    cuadruplos.llenarCuadruploPendiente(cuadruploMain, cuadruplos.contador)
 
 def p_bloque(p):
     '''
@@ -322,12 +377,12 @@ def p_estatutoFuncional(p):
 
 def p_condicionFuncional(p):
     '''
-    condicionFuncional : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL bloqueFuncional bloqueCondicionalFuncional
+    condicionFuncional : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL cuadruploCondicion bloqueFuncional bloqueCondicionalFuncional llenarSaltoPendiente
     '''
 
 def p_bloqueCondicionalFuncional(p):
     '''
-    bloqueCondicionalFuncional : ELSE bloqueFuncional
+    bloqueCondicionalFuncional : ELSE cuadruploElse bloqueFuncional
                                | empty
     '''
 
@@ -451,9 +506,12 @@ def p_insertarAPilas(p):
     '''
     if p[-1] not in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys() and p[-1] not in directorio.tabla["global"]["tablaVariables"].keys():
         raise Exception("La variable «"+ p[-1] + "» no existe. Favor de declararla.")
-    else:
+    elif p[-1] in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys():
         pilaOperandos.append(p[-1])
         pilaTipos.append(directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-1]])
+    elif p[-1] in directorio.tabla["global"]["tablaVariables"].keys():
+        pilaOperandos.append(p[-1])
+        pilaTipos.append(directorio.tabla["global"]["tablaVariables"][p[-1]])
 
 def p_arrayVariable(p):
     '''
