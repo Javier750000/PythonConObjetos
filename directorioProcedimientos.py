@@ -19,22 +19,23 @@ class Directorio:
         else:
             self.tabla[nombreFuncion]["tablaVariables"][variable] = tipo
             
-    def agregarFuncion(self, nombreFuncion, tipoFuncion):
+    def agregarFuncion(self, nombreFuncion, tipoFuncion, contador):
         if nombreFuncion in self.tabla.keys():
             raise Exception("La función «"+ nombreFuncion + "» ya existe. Favor de renombrala.")
         else:
             self.tabla[nombreFuncion] = {
-                "tipoFuncion": tipoFuncion, "tablaVariables": {}, "listaParametros": {}
+                "tipoFuncion": tipoFuncion, "tablaVariables": {}, "listaNombresParametros": [], "listaTiposParametros": [], "contador": contador
             }
 
     def agregarParametros(self, nombreParametro, tipoParametro, nombreFuncion):
-        if nombreParametro in self.tabla[nombreFuncion]["listaParametros"].keys():
-            raise Exception("La función «"+ nombreFuncion + "» ya tiene declarado un parámetro con nombre " + nombreParametro + ". Favor de renombrarlo.")
+        if nombreParametro in self.tabla[nombreFuncion]["listaNombresParametros"]:
+            raise Exception("La función «"+ nombreFuncion + "» ya tiene declarado un parámetro con nombre «" + nombreParametro + "». Favor de renombrarlo.")
         else:
-            self.tabla[nombreFuncion]["listaParametros"][nombreParametro] = tipoParametro
+            self.tabla[nombreFuncion]["listaNombresParametros"].append(nombreParametro)
+            self.tabla[nombreFuncion]["listaTiposParametros"].append(tipoParametro)
 
     def agregarCantidadParametros(self, nombreFuncion):
-        self.tabla[nombreFuncion]["cantidadParametros"] = len(self.tabla[nombreFuncion]["listaParametros"].keys())
+        self.tabla[nombreFuncion]["cantidadParametros"] = len(self.tabla[nombreFuncion]["listaNombresParametros"])
 
     def actualizarContadorLocales(self, tipo):
         self.contadorLocales[tipo] += 1

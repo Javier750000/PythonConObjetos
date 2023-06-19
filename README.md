@@ -27,3 +27,6 @@ Realizamos las validaciones en el directorio de procedimientos para que no se pu
 
 ## Noveno avance
 Agregamos los puntos neurálgicos para generar los cuádruplos de las expresiones aritméticas, los estatutos lineales y los estatutos condicionales (if...else y while). Todos los cuádruplos anteriores ya se generan correctamente. Refactorizamos la tabla de constantes para que fuera menos compleja y ya se hace un uso correcto de ella. Modificamos el cubo semántico para que volviera a hacer uso de texto en lugar de enteros porque estamos guardando los tipos de los operandos como texto en las pilas, por lo que el cubo no estaba funcionando anteriormente.
+
+## Décimo avance
+Agregamos el código intermedio para la declaración y la llamada de funciones. En la parte de la declaración, ya generamos la firma de la función y se guarda en el directorio de procedimientos, junto con sus cuádruplos correspondientes y la liberación de la memoria local al salir de la función. También validamos que se respete el número de retornos que puede haber por función en caso de que la función contenga condiciones, ya que puede haber más de un retorno. En la parte de la llamada, ya se generan sus cuádruplos correspondientes y se valida que la firma de la llamada concuerde con la firma de la declaración.

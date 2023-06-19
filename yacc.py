@@ -19,9 +19,15 @@ pilaContextos = []
 pilaSaltos = []
 pilaDimensiones = []
 
+nombreFuncion = ""
+k = 1
+contadorRetorno = 0
+contadorRetornoCondicional = 0
+contadorRetornoElse = 0
+
 def p_programa(p):
     '''
-    programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA cuadruploMain clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL saltoMain vars2 bloque
+    programa : PROGRAM inicializarDirectorio ID PUNTOYCOMA cuadruploMain clases vars2 funciones MAIN PARENTESISINICIAL PARENTESISFINAL saltoMain vars2 bloque cuadruploFin
     '''
     print("Directorio: ")
     pprint(directorio.tabla, sort_dicts=False)
@@ -64,6 +70,12 @@ def p_cuadruploMain(p):
     '''
     cuadruplos.generarCuadruploNuevo('GoTo', None, None, None)
     pilaSaltos.append(cuadruplos.contador-1)
+
+def p_cuadruploFin(p):
+    '''
+    cuadruploFin : empty
+    '''
+    cuadruplos.generarCuadruploNuevo('End', None, None, None)
 
 def p_clases(p):
     '''
@@ -113,11 +125,16 @@ def p_agregarFuncion(p):
     '''
     agregarFuncion :
     '''
-    directorio.agregarFuncion(p[-1], p[-2])
+    directorio.agregarFuncion(p[-1], p[-2], cuadruplos.contador)
+    global nombreFuncion
+    nombreFuncion = p[-1]
     pilaContextos.append(p[-1])
     directorio.contadorParametros = 0
     directorio.reinicializarContadorLocales()
-    avail.reinicializar()
+    global contadorRetorno
+    global contadorRetornoCondicional
+    contadorRetorno = 0
+    contadorRetornoCondicional = 0
 
 def p_eliminarContexto(p):
     '''
@@ -135,6 +152,15 @@ def p_terminarFuncion(p):
     directorio.temporales = avail.regresarDireccionesOcupadas('temporales')
     print(directorio.temporales)
     print("")
+    avail.reinicializar()
+    if directorio.tabla[nombreFuncion]["tipoFuncion"] != "void":
+        if contadorRetorno > 1 or (contadorRetorno == 1 and contadorRetornoElse >= contadorRetornoCondicional and contadorRetornoCondicional > 0):
+            raise Exception("Hay demasiados retornos en la función «"+pilaContextos[-1]+"».")
+        elif contadorRetorno < 1:
+            if contadorRetornoCondicional < 1:
+                raise Exception("No se incluyó un retorno en la función «"+pilaContextos[-1]+"».")
+            elif contadorRetornoElse < 1:
+                raise Exception("No se incluyó un retorno para el caso else en la función «"+pilaContextos[-1]+"».")
 
 def p_param(p):
     '''
@@ -146,8 +172,8 @@ def p_agregarParam(p):
     '''
     agregarParam :
     '''
-    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
     directorio.agregarParametros(p[-1], p[-2], pilaContextos[-1])
+    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
     directorio.contadorParametros+=1;
 
 def p_paramsAdicionales(p):
@@ -177,9 +203,8 @@ def p_contadorCuadruplos(p):
     '''
     contadorCuadruplos : empty
     '''
-    directorio.contador = cuadruplos.contador
     print("La función empieza en el cuádruplo siguiente:")
-    print(directorio.contador)
+    print(directorio.tabla[pilaContextos[-1]]["contador"])
     print("")
 
 def p_vars2(p):
@@ -371,18 +396,66 @@ def p_estatutoFuncional(p):
                       | cicloFor
                       | cicloWhile
                       | llamada
-                      | RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA
+                      | retorno
+    '''
+    p[0] = p[1]
+
+def p_bloqueFuncionalCondicional(p):
+    '''
+    bloqueFuncionalCondicional : LLAVEINICIAL estatutoFuncional2Condicional LLAVEFINAL
+    '''
+
+def p_estatutoFuncional2Condicional(p):
+    '''
+    estatutoFuncional2Condicional : estatutoFuncionalCondicional estatutoFuncional2Condicional
+                                  | empty
+    '''
+
+def p_estatutoFuncionalCondicional(p):
+    '''
+    estatutoFuncionalCondicional : asignacion
+                                 | condicionFuncional
+                                 | escritura
+                                 | lectura
+                                 | cicloFor
+                                 | cicloWhile
+                                 | llamada
+                                 | retornoCondicional
+    '''
+    p[0] = p[1]
+
+def p_bloqueFuncionalElse(p):
+    '''
+    bloqueFuncionalElse : LLAVEINICIAL estatutoFuncional2Else LLAVEFINAL
+    '''
+
+def p_estatutoFuncional2Else(p):
+    '''
+    estatutoFuncional2Else : estatutoFuncionalElse estatutoFuncional2Else
+                           | empty
+    '''
+
+def p_estatutoFuncionalElse(p):
+    '''
+    estatutoFuncionalElse : asignacion
+                          | condicionFuncional
+                          | escritura
+                          | lectura
+                          | cicloFor
+                          | cicloWhile
+                          | llamada
+                          | retornoElse
     '''
     p[0] = p[1]
 
 def p_condicionFuncional(p):
     '''
-    condicionFuncional : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL cuadruploCondicion bloqueFuncional bloqueCondicionalFuncional llenarSaltoPendiente
+    condicionFuncional : IF PARENTESISINICIAL hiperexpresion PARENTESISFINAL cuadruploCondicion bloqueFuncionalCondicional bloqueCondicionalFuncional llenarSaltoPendiente
     '''
 
 def p_bloqueCondicionalFuncional(p):
     '''
-    bloqueCondicionalFuncional : ELSE cuadruploElse bloqueFuncional
+    bloqueCondicionalFuncional : ELSE cuadruploElse bloqueFuncionalElse
                                | empty
     '''
 
@@ -470,7 +543,7 @@ def p_llenarCuadruploPendiente(p):
 
 def p_llamada(p):
     '''
-    llamada : ID existeFuncion PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
+    llamada : ID existeFuncion PARENTESISINICIAL generarERA listaHiperexpresiones validarNulo PARENTESISFINAL generarGoSub
             | ID PUNTO ID PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
     '''
     p[0] = p[1]
@@ -481,17 +554,129 @@ def p_existeFuncion(p):
     '''
     if p[-1] not in directorio.tabla.keys():
         raise Exception("La función «"+ p[-1] + "» no existe. Favor de declararla.")
+    else:
+        global nombreFuncion
+        nombreFuncion = p[-1]
+        pilaOperadores.append('(')
+
+def p_generarERA(p):
+    '''
+    generarERA : empty
+    '''
+    cuadruplos.generarCuadruploNuevo('ERA', None, None, p[-3])
+    global k
+    k=1
 
 def p_listaHiperexpresiones(p):
     '''
-    listaHiperexpresiones : hiperexpresion hiperexpresionesAdicionales
+    listaHiperexpresiones : hiperexpresion generarParam hiperexpresionesAdicionales
     '''
+
+def p_generarParam(p):
+    '''
+    generarParam : empty
+    '''
+    argumento = pilaOperandos.pop()
+    argumentoTipo = pilaTipos.pop()
+    if k > len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
+        raise Exception("Se están mandando parámetros de más en la llamada a la función «"+nombreFuncion+"».")
+    if argumentoTipo != directorio.tabla[nombreFuncion]["listaTiposParametros"][k-1]:
+        raise Exception("El tipo del parámetro recibido en la llamada no corresponde con el tipo del parámetro en la declaración de la función.")
+    else:
+        cuadruplos.generarCuadruploNuevo('param', argumento, None, 'param'+str(k))
 
 def p_hiperexpresionesAdicionales(p):
     '''
-    hiperexpresionesAdicionales : COMA listaHiperexpresiones
+    hiperexpresionesAdicionales : COMA iteradorK listaHiperexpresiones
                                 | empty
     '''
+
+def p_iteradorK(p):
+    '''
+    iteradorK : empty
+    '''
+    global k
+    k += 1
+
+def p_validarNulo(p):
+    '''
+    validarNulo : empty
+    '''
+    if k != len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
+        raise Exception("Se están mandando parámetros de menos en la llamada a la función «"+nombreFuncion+"».")
+
+def p_generarGoSub(p):
+    '''
+    generarGoSub : empty
+    '''
+    cuadruplos.generarCuadruploNuevo('GoSub', p[-7], None, directorio.tabla[p[-7]]["contador"])
+    pilaOperadores.pop()
+
+def p_retorno(p):
+    '''
+    retorno : RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA
+    '''
+    tipoFuncion = directorio.tabla[pilaContextos[-1]]["tipoFuncion"]
+    retorno = pilaOperandos.pop()
+    tipoRetorno = pilaTipos.pop()
+    if tipoRetorno != tipoFuncion:
+        raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
+    else:
+        temporal = avail.generarTemporalNuevo(tipoRetorno)
+        pilaOperandos.append(temporal)
+        pilaTipos.append(tipoRetorno)
+        global nombreFuncion
+        cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, temporal)
+        direccionRetorno = avail.generarGlobalNuevo(tipoFuncion)
+        directorio.agregarVariables(direccionRetorno, tipoFuncion, "global")
+        cuadruplos.generarCuadruploNuevo('=', retorno, None, direccionRetorno)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionRetorno)
+        global contadorRetorno
+        contadorRetorno+=1
+
+def p_retornoCondicional(p):
+    '''
+    retornoCondicional : RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA
+    '''
+    tipoFuncion = directorio.tabla[pilaContextos[-1]]["tipoFuncion"]
+    retorno = pilaOperandos.pop()
+    tipoRetorno = pilaTipos.pop()
+    if tipoRetorno != tipoFuncion:
+        raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
+    else:
+        temporal = avail.generarTemporalNuevo(tipoRetorno)
+        pilaOperandos.append(temporal)
+        pilaTipos.append(tipoRetorno)
+        global nombreFuncion
+        cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, temporal)
+        direccionRetorno = avail.generarGlobalNuevo(tipoFuncion)
+        directorio.agregarVariables(direccionRetorno, tipoFuncion, "global")
+        cuadruplos.generarCuadruploNuevo('=', retorno, None, direccionRetorno)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionRetorno)
+        global contadorRetornoCondicional
+        contadorRetornoCondicional+=1
+
+def p_retornoElse(p):
+    '''
+    retornoElse : RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA
+    '''
+    tipoFuncion = directorio.tabla[pilaContextos[-1]]["tipoFuncion"]
+    retorno = pilaOperandos.pop()
+    tipoRetorno = pilaTipos.pop()
+    if tipoRetorno != tipoFuncion:
+        raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
+    else:
+        temporal = avail.generarTemporalNuevo(tipoRetorno)
+        pilaOperandos.append(temporal)
+        pilaTipos.append(tipoRetorno)
+        global nombreFuncion
+        cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, temporal)
+        direccionRetorno = avail.generarGlobalNuevo(tipoFuncion)
+        directorio.agregarVariables(direccionRetorno, tipoFuncion, "global")
+        cuadruplos.generarCuadruploNuevo('=', retorno, None, direccionRetorno)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionRetorno)
+        global contadorRetornoElse
+        contadorRetornoElse+=1
 
 def p_variable(p):
     '''
