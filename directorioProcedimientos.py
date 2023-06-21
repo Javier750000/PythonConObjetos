@@ -13,11 +13,13 @@ class Directorio:
             "tipoFuncion": "void", "tablaVariables": {}
         }
 
-    def agregarVariables(self, variable, tipo, nombreFuncion):
+    def agregarVariables(self, variable, tipo, nombreFuncion, dirV):
         if variable in self.tabla[nombreFuncion]["tablaVariables"].keys():
             raise Exception("La variable «"+ variable + "» ya existe. Favor de renombrala.")
         else:
-            self.tabla[nombreFuncion]["tablaVariables"][variable] = tipo
+            self.tabla[nombreFuncion]["tablaVariables"][variable] = {
+                "tipoVariable": tipo, "direccionVirtual": dirV
+            }
             
     def agregarFuncion(self, nombreFuncion, tipoFuncion, contador):
         if nombreFuncion in self.tabla.keys():

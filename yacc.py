@@ -135,6 +135,8 @@ def p_agregarFuncion(p):
     global contadorRetornoCondicional
     contadorRetorno = 0
     contadorRetornoCondicional = 0
+    dirV = avail.generarGlobalNuevo(p[-2])
+    directorio.agregarVariables(nombreFuncion, directorio.tabla[nombreFuncion]["tipoFuncion"], "global", dirV)
 
 def p_eliminarContexto(p):
     '''
@@ -173,7 +175,8 @@ def p_agregarParam(p):
     agregarParam :
     '''
     directorio.agregarParametros(p[-1], p[-2], pilaContextos[-1])
-    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1])
+    dirV = avail.generarDireccionNueva(p[-2], "locales")
+    directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1], dirV)
     directorio.contadorParametros+=1;
 
 def p_paramsAdicionales(p):
@@ -245,7 +248,12 @@ def p_listaIDsSimples(p):
     print("Variable:", p[1])
     print("")
     
-    directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1])
+    if pilaContextos[-1] == "global":
+        contexto = "globales"
+    else:
+        contexto = "locales"
+    dirV = avail.generarDireccionNueva(directorio.tipo, contexto)
+    directorio.agregarVariables(p[1], directorio.tipo, pilaContextos[-1], dirV)
     directorio.actualizarContadorLocales(directorio.tipo)
 
 def p_array(p):
@@ -332,11 +340,18 @@ def p_cuadruploAsignacion(p):
     '''
     cuadruploAsignacion : empty
     '''
-    if directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-3]] != pilaTipos[-1]:
-        raise Exception("A la variable «"+ p[-3] + "» no se le puede asignar ese tipo de dato.")
-    else:
-        cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, p[-3])
-        pilaTipos.pop()
+    if p[-3] in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys():
+        if directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-3]]["tipoVariable"] != pilaTipos[-1]:
+            raise Exception("A la variable «"+ p[-3] + "» no se le puede asignar ese tipo de dato.")
+        else:
+            cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, p[-3])
+            pilaTipos.pop()
+    elif p[-3] in directorio.tabla["global"]["tablaVariables"].keys():
+        if directorio.tabla["global"]["tablaVariables"][p[-3]]["tipoVariable"] != pilaTipos[-1]:
+            raise Exception("A la variable «"+ p[-3] + "» no se le puede asignar ese tipo de dato.")
+        else:
+            cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, p[-3])
+            pilaTipos.pop()
 
 def p_condicion(p):
     '''
@@ -571,6 +586,8 @@ def p_listaHiperexpresiones(p):
     '''
     listaHiperexpresiones : hiperexpresion generarParam hiperexpresionesAdicionales
     '''
+    global nombreFuncion
+    nombreFuncion = p[-4]
 
 def p_generarParam(p):
     '''
@@ -602,15 +619,22 @@ def p_validarNulo(p):
     '''
     validarNulo : empty
     '''
+    global k
     if k != len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
         raise Exception("Se están mandando parámetros de menos en la llamada a la función «"+nombreFuncion+"».")
+    k=1
 
 def p_generarGoSub(p):
     '''
     generarGoSub : empty
     '''
-    cuadruplos.generarCuadruploNuevo('GoSub', p[-7], None, directorio.tabla[p[-7]]["contador"])
+    cuadruplos.generarCuadruploNuevo('GoSub', nombreFuncion, None, directorio.tabla[nombreFuncion]["contador"])
     pilaOperadores.pop()
+    tipoFuncion = directorio.tabla[nombreFuncion]["tipoFuncion"]
+    direccionRetorno = avail.generarTemporalNuevo(tipoFuncion)
+    cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, direccionRetorno)
+    pilaOperandos.append(direccionRetorno)
+    pilaTipos.append(tipoFuncion)
 
 def p_retorno(p):
     '''
@@ -622,15 +646,7 @@ def p_retorno(p):
     if tipoRetorno != tipoFuncion:
         raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
     else:
-        temporal = avail.generarTemporalNuevo(tipoRetorno)
-        pilaOperandos.append(temporal)
-        pilaTipos.append(tipoRetorno)
-        global nombreFuncion
-        cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, temporal)
-        direccionRetorno = avail.generarGlobalNuevo(tipoFuncion)
-        directorio.agregarVariables(direccionRetorno, tipoFuncion, "global")
-        cuadruplos.generarCuadruploNuevo('=', retorno, None, direccionRetorno)
-        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionRetorno)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
         global contadorRetorno
         contadorRetorno+=1
 
@@ -644,17 +660,10 @@ def p_retornoCondicional(p):
     if tipoRetorno != tipoFuncion:
         raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
     else:
-        temporal = avail.generarTemporalNuevo(tipoRetorno)
-        pilaOperandos.append(temporal)
-        pilaTipos.append(tipoRetorno)
-        global nombreFuncion
-        cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, temporal)
-        direccionRetorno = avail.generarGlobalNuevo(tipoFuncion)
-        directorio.agregarVariables(direccionRetorno, tipoFuncion, "global")
-        cuadruplos.generarCuadruploNuevo('=', retorno, None, direccionRetorno)
-        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionRetorno)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
         global contadorRetornoCondicional
         contadorRetornoCondicional+=1
+        cuadruplos.generarCuadruploNuevo('EndFunc', None, None, None)
 
 def p_retornoElse(p):
     '''
@@ -666,15 +675,7 @@ def p_retornoElse(p):
     if tipoRetorno != tipoFuncion:
         raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
     else:
-        temporal = avail.generarTemporalNuevo(tipoRetorno)
-        pilaOperandos.append(temporal)
-        pilaTipos.append(tipoRetorno)
-        global nombreFuncion
-        cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, temporal)
-        direccionRetorno = avail.generarGlobalNuevo(tipoFuncion)
-        directorio.agregarVariables(direccionRetorno, tipoFuncion, "global")
-        cuadruplos.generarCuadruploNuevo('=', retorno, None, direccionRetorno)
-        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionRetorno)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
         global contadorRetornoElse
         contadorRetornoElse+=1
 
@@ -689,14 +690,22 @@ def p_insertarAPilas(p):
     '''
     insertarAPilas : empty
     '''
+    '''
+    pprint(directorio.tabla)
+    print("Contexto:")
+    print(directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys())
+    print("Global:")
+    print(directorio.tabla["global"]["tablaVariables"].keys())
+    print("")
+    '''
     if p[-1] not in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys() and p[-1] not in directorio.tabla["global"]["tablaVariables"].keys():
         raise Exception("La variable «"+ p[-1] + "» no existe. Favor de declararla.")
     elif p[-1] in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys():
         pilaOperandos.append(p[-1])
-        pilaTipos.append(directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-1]])
+        pilaTipos.append(directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-1]]["tipoVariable"])
     elif p[-1] in directorio.tabla["global"]["tablaVariables"].keys():
         pilaOperandos.append(p[-1])
-        pilaTipos.append(directorio.tabla["global"]["tablaVariables"][p[-1]])
+        pilaTipos.append(directorio.tabla["global"]["tablaVariables"][p[-1]]["tipoVariable"])
 
 def p_arrayVariable(p):
     '''
@@ -867,33 +876,41 @@ def p_insertarEnteros(p):
     '''
     insertarEnteros : empty
     '''
-    constantes.agregarConstante(p[-1], 'int')
-    pilaOperandos.append(p[-1])
-    pilaTipos.append(constantes.tabla[p[-1]])
+    if constantes.tabla.get(str(p[-1])) is None:
+        dirV = avail.generarDireccionNueva("int", "constantes")
+        constantes.agregarConstante(str(p[-1]), 'int', dirV)
+        pilaOperandos.append(p[-1])
+        pilaTipos.append("int")
 
 def p_insertarFlotantes(p):
     '''
     insertarFlotantes : empty
     '''
-    constantes.agregarConstante(p[-1], 'float')
-    pilaOperandos.append(p[-1])
-    pilaTipos.append(constantes.tabla[p[-1]])
+    if constantes.tabla.get(str(p[-1])) is None:
+        dirV = avail.generarDireccionNueva("float", "constantes")
+        constantes.agregarConstante(str(p[-1]), 'float', dirV)
+        pilaOperandos.append(p[-1])
+        pilaTipos.append("float")
 
 def p_insertarStrings(p):
     '''
     insertarStrings : empty
     '''
-    constantes.agregarConstante(p[-1], 'char')
-    pilaOperandos.append(p[-1])
-    pilaTipos.append(constantes.tabla[p[-1]])
+    if constantes.tabla.get(str(p[-1])) is None:
+        dirV = avail.generarDireccionNueva("char", "constantes")
+        constantes.agregarConstante(str(p[-1]), 'char', dirV)
+        pilaOperandos.append(p[-1])
+        pilaTipos.append("char")
 
 def p_insertarBooleanos(p):
     '''
     insertarBooleanos : empty
     '''
-    constantes.agregarConstante(p[-1], 'bool')
-    pilaOperandos.append(p[-1])
-    pilaTipos.append(constantes.tabla[p[-1]])
+    if constantes.tabla.get(str(p[-1])) is None:
+        dirV = avail.generarDireccionNueva("bool", "constantes")
+        constantes.agregarConstante(str(p[-1]), 'bool', dirV)
+        pilaOperandos.append(p[-1])
+        pilaTipos.append("bool")
 
 def p_empty(p):
     'empty :'

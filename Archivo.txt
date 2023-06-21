@@ -2,9 +2,11 @@ program patito;
 var
    float: a, b, f, z, dobleZ;
 
-func float uno(float a)
+func float uno(float aba)
+var
+   float: x;
 {
-   a=a+b*a;
+   x=a+b*a;
    print(a, b, a+b);
    return (1.0);
 }
