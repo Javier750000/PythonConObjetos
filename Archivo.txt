@@ -1,22 +1,42 @@
 program patito;
 var
-   int: A, B, C, D, E;
+   float: a, b, f, z, dobleZ;
+
+func float uno(float aba)
+var
+   float: x;
+{
+   x=a+b*a;
+   print(a, b, a+b);
+   return (1.0);
+}
+
+func float dos(float a, float b, float g)
+var
+   float: i;
+{
+   i=b;
+   while (i>0)
+   {
+      a=a+b*i+b;
+      print(uno(5.0));
+      print(a);
+      i=i - 1;
+   }
+   return (2.0);
+}
+
+func float doble(float z)
+{
+   return (z*uno(z - 1));
+}
 
 main()
 {
-   if (A*B+C>D-E)
-   {
-      B=C+D*C;
-      print(B, A+B);
-      if (A>B)
-      {
-         C=D+E;
-      }
-   }
-   else
-   {
-      A=B+C;
-      print(A);
-   }
-   C=D*E;
+   a=3.0; b=a+1;
+   print(a, b);
+   f=3.14;
+   dos(a+b*2, b, f*3)
+   print(a, b, f*2+1);
+   dobleZ = 50+doble(z);
 }
