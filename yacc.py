@@ -344,13 +344,13 @@ def p_cuadruploAsignacion(p):
         if directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-3]]["tipoVariable"] != pilaTipos[-1]:
             raise Exception("A la variable «"+ p[-3] + "» no se le puede asignar ese tipo de dato.")
         else:
-            cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, p[-3])
+            cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-3]]["direccionVirtual"])
             pilaTipos.pop()
     elif p[-3] in directorio.tabla["global"]["tablaVariables"].keys():
         if directorio.tabla["global"]["tablaVariables"][p[-3]]["tipoVariable"] != pilaTipos[-1]:
             raise Exception("A la variable «"+ p[-3] + "» no se le puede asignar ese tipo de dato.")
         else:
-            cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, p[-3])
+            cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, directorio.tabla["global"]["tablaVariables"][p[-3]]["direccionVirtual"])
             pilaTipos.pop()
 
 def p_condicion(p):
@@ -632,7 +632,7 @@ def p_generarGoSub(p):
     pilaOperadores.pop()
     tipoFuncion = directorio.tabla[nombreFuncion]["tipoFuncion"]
     direccionRetorno = avail.generarTemporalNuevo(tipoFuncion)
-    cuadruplos.generarCuadruploNuevo('=', nombreFuncion, None, direccionRetorno)
+    cuadruplos.generarCuadruploNuevo('=', directorio.tabla["global"]["tablaVariables"][nombreFuncion]["direccionVirtual"], None, direccionRetorno)
     pilaOperandos.append(direccionRetorno)
     pilaTipos.append(tipoFuncion)
 
@@ -663,7 +663,6 @@ def p_retornoCondicional(p):
         cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
         global contadorRetornoCondicional
         contadorRetornoCondicional+=1
-        cuadruplos.generarCuadruploNuevo('EndFunc', None, None, None)
 
 def p_retornoElse(p):
     '''
@@ -701,10 +700,10 @@ def p_insertarAPilas(p):
     if p[-1] not in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys() and p[-1] not in directorio.tabla["global"]["tablaVariables"].keys():
         raise Exception("La variable «"+ p[-1] + "» no existe. Favor de declararla.")
     elif p[-1] in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys():
-        pilaOperandos.append(p[-1])
+        pilaOperandos.append(directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-1]]["direccionVirtual"])
         pilaTipos.append(directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-1]]["tipoVariable"])
     elif p[-1] in directorio.tabla["global"]["tablaVariables"].keys():
-        pilaOperandos.append(p[-1])
+        pilaOperandos.append(directorio.tabla["global"]["tablaVariables"][p[-1]]["direccionVirtual"])
         pilaTipos.append(directorio.tabla["global"]["tablaVariables"][p[-1]]["tipoVariable"])
 
 def p_arrayVariable(p):
@@ -879,7 +878,7 @@ def p_insertarEnteros(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("int", "constantes")
         constantes.agregarConstante(str(p[-1]), 'int', dirV)
-        pilaOperandos.append(p[-1])
+        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
         pilaTipos.append("int")
 
 def p_insertarFlotantes(p):
@@ -889,7 +888,7 @@ def p_insertarFlotantes(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("float", "constantes")
         constantes.agregarConstante(str(p[-1]), 'float', dirV)
-        pilaOperandos.append(p[-1])
+        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
         pilaTipos.append("float")
 
 def p_insertarStrings(p):
@@ -899,7 +898,7 @@ def p_insertarStrings(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("char", "constantes")
         constantes.agregarConstante(str(p[-1]), 'char', dirV)
-        pilaOperandos.append(p[-1])
+        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
         pilaTipos.append("char")
 
 def p_insertarBooleanos(p):
@@ -909,7 +908,7 @@ def p_insertarBooleanos(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("bool", "constantes")
         constantes.agregarConstante(str(p[-1]), 'bool', dirV)
-        pilaOperandos.append(p[-1])
+        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
         pilaTipos.append("bool")
 
 def p_empty(p):
