@@ -48,6 +48,7 @@ tokens = [
         'PUNTOYCOMA',
         'DOSPUNTOS',
         'PUNTO',
+        'SALTOLINEA',
         'CTE_BOOL',
         'CTE_F', 
         'CTE_I',
@@ -77,6 +78,10 @@ t_COMA = r','
 t_PUNTOYCOMA = r';'
 t_DOSPUNTOS = r':'
 t_PUNTO = r'.'
+
+def t_SALTOLINEA(t):
+    r'\\n'
+    return t
 
 def t_CTE_BOOL(t):
     r'true|false'

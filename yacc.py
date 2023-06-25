@@ -346,11 +346,15 @@ def p_cuadruploAsignacion(p):
         else:
             cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, directorio.tabla[pilaContextos[-1]]["tablaVariables"][p[-3]]["direccionVirtual"])
             pilaTipos.pop()
+            pilaOperandos.pop()
+            pilaTipos.pop()
     elif p[-3] in directorio.tabla["global"]["tablaVariables"].keys():
         if directorio.tabla["global"]["tablaVariables"][p[-3]]["tipoVariable"] != pilaTipos[-1]:
             raise Exception("A la variable «"+ p[-3] + "» no se le puede asignar ese tipo de dato.")
         else:
             cuadruplos.generarCuadruploNuevo('=', pilaOperandos.pop(), None, directorio.tabla["global"]["tablaVariables"][p[-3]]["direccionVirtual"])
+            pilaTipos.pop()
+            pilaOperandos.pop()
             pilaTipos.pop()
 
 def p_condicion(p):
@@ -476,7 +480,7 @@ def p_bloqueCondicionalFuncional(p):
 
 def p_escritura(p):
     '''
-    escritura : PRINT PARENTESISINICIAL listaExpresiones PARENTESISFINAL PUNTOYCOMA
+    escritura : PRINT PARENTESISINICIAL listaExpresiones PARENTESISFINAL saltarLinea PUNTOYCOMA
     '''
 
 def p_listaExpresiones(p):
@@ -496,6 +500,18 @@ def p_cuadruploEscritura(p):
     '''
     cuadruplos.generarCuadruploNuevo('print', None, None, pilaOperandos.pop())
     pilaTipos.pop()
+
+def p_saltarLinea(p):
+    '''
+    saltarLinea : SALTOLINEA cuadruploSaltoLinea
+                | empty
+    '''
+
+def p_cuadruploSaltoLinea(p):
+    '''
+    cuadruploSaltoLinea : empty
+    '''
+    cuadruplos.generarCuadruploNuevo('print', None, None, '\n')
 
 def p_lectura(p):
     '''
@@ -689,14 +705,6 @@ def p_insertarAPilas(p):
     '''
     insertarAPilas : empty
     '''
-    '''
-    pprint(directorio.tabla)
-    print("Contexto:")
-    print(directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys())
-    print("Global:")
-    print(directorio.tabla["global"]["tablaVariables"].keys())
-    print("")
-    '''
     if p[-1] not in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys() and p[-1] not in directorio.tabla["global"]["tablaVariables"].keys():
         raise Exception("La variable «"+ p[-1] + "» no existe. Favor de declararla.")
     elif p[-1] in directorio.tabla[pilaContextos[-1]]["tablaVariables"].keys():
@@ -878,8 +886,8 @@ def p_insertarEnteros(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("int", "constantes")
         constantes.agregarConstante(str(p[-1]), 'int', dirV)
-        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
-        pilaTipos.append("int")
+    pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
+    pilaTipos.append("int")
 
 def p_insertarFlotantes(p):
     '''
@@ -888,8 +896,8 @@ def p_insertarFlotantes(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("float", "constantes")
         constantes.agregarConstante(str(p[-1]), 'float', dirV)
-        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
-        pilaTipos.append("float")
+    pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
+    pilaTipos.append("float")
 
 def p_insertarStrings(p):
     '''
@@ -898,8 +906,8 @@ def p_insertarStrings(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("char", "constantes")
         constantes.agregarConstante(str(p[-1]), 'char', dirV)
-        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
-        pilaTipos.append("char")
+    pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
+    pilaTipos.append("char")
 
 def p_insertarBooleanos(p):
     '''
@@ -908,8 +916,8 @@ def p_insertarBooleanos(p):
     if constantes.tabla.get(str(p[-1])) is None:
         dirV = avail.generarDireccionNueva("bool", "constantes")
         constantes.agregarConstante(str(p[-1]), 'bool', dirV)
-        pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
-        pilaTipos.append("bool")
+    pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
+    pilaTipos.append("bool")
 
 def p_empty(p):
     'empty :'
