@@ -1,5 +1,6 @@
 from lex import lexer, tokens
 from ply.yacc import yacc
+import maquinaVirtual as maquinaVirtual
 from directorioProcedimientos import Directorio
 from avail import Avail
 from cuadruplos import Cuadruplos
@@ -56,6 +57,7 @@ def p_programa(p):
     print("Pila de saltos: ")
     print(pilaSaltos)
     print("")
+    maquinaVirtual.ejecutar_maquina_virtual(directorio,constantes.tabla,cuadruplos)
 
 def p_inicializarDirectorio(p):
     '''

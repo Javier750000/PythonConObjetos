@@ -1,6 +1,6 @@
 program patito;
 var
-   float: a, b, f, z, dobleZ;
+   float: a, b, f;
 
 func float uno(float aba)
 var
@@ -38,5 +38,4 @@ main()
    f=3.14;
    print(dos(a+b*2, b, f*3));
    print(a, b, f*2+1);
-   dobleZ = 50+doble(z);
 }

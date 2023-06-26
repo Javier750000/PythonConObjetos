@@ -1,0 +1,35 @@
+program funcionTest;
+var
+   int: A, B, C, D, E;
+
+func void miFuncion(int param1, int param2)
+var
+   int: variableEnFunc;
+{
+   if (A*B > C)
+   {
+      B=C+A;
+      print(B, "B print");
+      if (A>B)
+      {
+         print(A, "A print");
+      }
+   }
+}
+
+func int miFuncion2(int param1)
+var
+   int: variableEnFunc2;
+{
+   print("B print en funcion 2");
+   if(variableEnFunc2 > A)
+   {
+      return (A);
+   }
+   return (variableEnFunc2);   
+}
+
+main()
+{
+   print(B, A+B);
+}
