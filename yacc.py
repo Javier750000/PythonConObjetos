@@ -57,7 +57,9 @@ def p_programa(p):
     print("Pila de saltos: ")
     print(pilaSaltos)
     print("")
-    maquinaVirtual.ejecutar_maquina_virtual(directorio,constantes.tabla,cuadruplos)
+    print("El código pudo ser leído correctamente.")
+    print("")
+    maquinaVirtual.ejecutar_maquina_virtual(directorio, constantes.tabla, cuadruplos)
 
 def p_inicializarDirectorio(p):
     '''

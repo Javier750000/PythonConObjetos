@@ -1,10 +1,9 @@
-import pprint
+from pprint import pprint
 from constantes import Constantes
 from directorioProcedimientos import Directorio
 from cuadruplos import Cuadruplos
 
 class MaquinaVirtual:
-
     def __init__(self, _id):
         self.memoria = {}
         self.id = _id
@@ -15,35 +14,25 @@ class MaquinaVirtual:
     def obtenerValorPorDir(self, dir):
         return self.memoria[dir]
 
-
 global memoriaLocal
 memoriaLocal = MaquinaVirtual(None)
 memoriaGlobal = MaquinaVirtual("global")
 saltosPendientes = []
 
-
-def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: Constantes,cuadruplos: Cuadruplos):
-    print('""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-    print('""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-    print('""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-    print('""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-    print('""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-    print('""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-    print('Ejecutando maquina virtual')
-    #saltosPendientes.append(len(cuadruplos)-1)
-
+def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: Constantes, cuadruplos: Cuadruplos):
+    print('Ejecutando máquina virtual: ')
+    print("")
     global _directorioProc
     _directorioProc = directorioProcedimientos
-
     apuntadorInstrucciones = 0
-
     for idConst, dataConstante in constantes.items():
-        guardarEnMemoria(dataConstante["direccionVirtual"],idConst)
-
-    print("QUADS",cuadruplos.listaCuadruplos)
-
-
-    
+        guardarEnMemoria(dataConstante["direccionVirtual"], idConst)
+    print("Cuádruplos: ")
+    i=1
+    for cuadruplo in cuadruplos.listaCuadruplos:
+        print(f'{i}: {cuadruplo}')
+        i+=1;
+    print("")
     while cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] != "End":
         global memoriaLocal
 
@@ -51,7 +40,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             print("ASIG",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
             valor = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             dir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            print("direccion", dir)
+            # print("direccion", dir)
             guardarEnMemoria(dir,valor)
             apuntadorInstrucciones+=1
         
@@ -60,8 +49,8 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
             res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            print("MEMORIALOCAL",memoriaLocal.memoria)
+            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
+            # print("MEMORIALOCAL",memoriaLocal.memoria)
             
             if leftDir in memoriaGlobal.memoria.keys():
                 leftVal = memoriaGlobal.memoria[leftDir]
@@ -75,9 +64,9 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if rightDir in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightDir]
 
-            print("leftVal", leftVal)
-            print("rightVal", rightVal)
-            print("res", res)
+            # print("leftVal", leftVal)
+            # print("rightVal", rightVal)
+            # print("res", res)
             
             if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
                 leftVal = memoriaLocal.memoria[leftVal]
@@ -85,19 +74,19 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightVal]
 
-            print("leftVal2", leftVal)
-            print("rightVal2", rightVal)
+            # print("leftVal2", leftVal)
+            # print("rightVal2", rightVal)
 
             lFinal = convertirConstanteEnTipo(leftVal)
             rFinal = convertirConstanteEnTipo(rightVal)
-            print("tipo lef",type(leftVal))
-            print("tipo rig",type(rightVal))
+            # print("tipo lef",type(leftVal))
+            # print("tipo rig",type(rightVal))
 
             valor = lFinal + rFinal
 
             if type(valor) == float:
                 valor = round(valor,10)
-            print("VALOR", valor)
+            # print("VALOR", valor)
             guardarEnMemoria(res, valor)
             apuntadorInstrucciones += 1
         
@@ -106,8 +95,8 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
             res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            print("MEMORIALOCAL",memoriaLocal.memoria)
+            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
+            # print("MEMORIALOCAL",memoriaLocal.memoria)
             
             if leftDir in memoriaGlobal.memoria.keys():
                 leftVal = memoriaGlobal.memoria[leftDir]
@@ -121,9 +110,9 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if rightDir in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightDir]
 
-            print("leftVal", leftVal)
-            print("rightVal", rightVal)
-            print("res", res)
+            # print("leftVal", leftVal)
+            # print("rightVal", rightVal)
+            # print("res", res)
             
             if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
                 leftVal = memoriaLocal.memoria[leftVal]
@@ -131,19 +120,19 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightVal]
 
-            print("leftVal2", leftVal)
-            print("rightVal2", rightVal)
+            # print("leftVal2", leftVal)
+            # print("rightVal2", rightVal)
 
             lFinal = convertirConstanteEnTipo(leftVal)
             rFinal = convertirConstanteEnTipo(rightVal)
-            print("tipo lef",type(leftVal))
-            print("tipo rig",type(rightVal))
+            # print("tipo lef",type(leftVal))
+            # print("tipo rig",type(rightVal))
 
             valor = lFinal - rFinal
 
             if type(valor) == float:
                 valor = round(valor,10)
-            print("VALOR", valor)
+            # print("VALOR", valor)
             guardarEnMemoria(res, valor)
             apuntadorInstrucciones+=1
 
@@ -152,8 +141,8 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
             res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            print("MEMORIALOCAL",memoriaLocal.memoria)
+            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
+            # print("MEMORIALOCAL",memoriaLocal.memoria)
             
             if leftDir in memoriaGlobal.memoria.keys():
                 leftVal = memoriaGlobal.memoria[leftDir]
@@ -167,9 +156,9 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if rightDir in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightDir]
 
-            print("leftVal", leftVal)
-            print("rightVal", rightVal)
-            print("res", res)
+            # print("leftVal", leftVal)
+            # print("rightVal", rightVal)
+            # print("res", res)
             
             if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
                 leftVal = memoriaLocal.memoria[leftVal]
@@ -177,19 +166,19 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightVal]
 
-            print("leftVal2", leftVal)
-            print("rightVal2", rightVal)
+            # print("leftVal2", leftVal)
+            # print("rightVal2", rightVal)
 
             lFinal = convertirConstanteEnTipo(leftVal)
             rFinal = convertirConstanteEnTipo(rightVal)
-            print("tipo lef",type(leftVal))
-            print("tipo rig",type(rightVal))
+            # print("tipo lef",type(leftVal))
+            # print("tipo rig",type(rightVal))
 
             valor = lFinal * rFinal
 
             if type(valor) == float:
                 valor = round(valor,10)
-            print("VALOR", valor)
+            # print("VALOR", valor)
             guardarEnMemoria(res, valor)
             apuntadorInstrucciones+=1
         
@@ -198,8 +187,8 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
             res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            print("MEMORIALOCAL",memoriaLocal.memoria)
+            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
+            # print("MEMORIALOCAL",memoriaLocal.memoria)
             
             if leftDir in memoriaGlobal.memoria.keys():
                 leftVal = memoriaGlobal.memoria[leftDir]
@@ -213,9 +202,9 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if rightDir in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightDir]
 
-            print("leftVal", leftVal)
-            print("rightVal", rightVal)
-            print("res", res)
+            # print("leftVal", leftVal)
+            # print("rightVal", rightVal)
+            # print("res", res)
             
             if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
                 leftVal = memoriaLocal.memoria[leftVal]
@@ -223,13 +212,15 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
                 rightVal = memoriaLocal.memoria[rightVal]
 
-            print("leftVal2", leftVal)
-            print("rightVal2", rightVal)
+            # print("leftVal2", leftVal)
+            # print("rightVal2", rightVal)
 
             lFinal = convertirConstanteEnTipo(leftVal)
             rFinal = convertirConstanteEnTipo(rightVal)
-            print("tipo lef",type(leftVal))
-            print("tipo rig",type(rightVal))
+
+            # print("tipo lef",type(leftVal))
+            # print("tipo rig",type(rightVal))
+
             if type(lFinal) == int and type(rFinal) == int:
                 valor = lFinal // rFinal
             else:
@@ -238,19 +229,15 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(valor) == float:
                 valor = round(valor,10)
 
-            print("VALOR", valor)
+            # print("VALOR", valor)
             guardarEnMemoria(res, valor)
             apuntadorInstrucciones+=1
         else:
             apuntadorInstrucciones+=1
-    
-    print("memoria GLOBAL en maquina")
-    print(memoriaGlobal.memoria)
-    print("memoria LOCAL en maquina")
-    print(memoriaLocal.memoria)
-
-
-
+    print("")
+    print("Memoria global en la máquina virtual: ")
+    pprint(memoriaGlobal.memoria)
+    pprint(memoriaLocal.memoria)
 
 def guardarEnMemoria(dir, valor):
     global memoriaLocalActual
@@ -281,7 +268,6 @@ def traducirDirVirtualConstante(dir):
         return 45000+diff
     
 
-
 def convertirConstanteEnTipo(valor):
     if type(valor) == str:
         if valor.isdigit():
@@ -295,32 +281,3 @@ def convertirConstanteEnTipo(valor):
             return valor
     else:
         return valor
-# def esFlotante(valorString):
-#     try:
-#         if valorString
-#             return True
-#     except ValueError:
-#         return False
-
-# def esEntero(valorString):
-#     try:
-#         int(valorString)
-#         return True
-#     except ValueError:
-#         return False
-
-
-
-
-# def esDireccionVirtual(dir):
-#     if esVariableGlobal(dir):
-#         if dir >= 
-
-
-# def extraerValorPorDir(dir, noAsignada=True):
-#     global memoriaLocal
-
-#     try:
-#         if noAsignada:
-#             if esVariableGlobal(dir):
-#                 if
