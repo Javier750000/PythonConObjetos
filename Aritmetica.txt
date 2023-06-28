@@ -16,7 +16,7 @@ main()
    }
    print("El valor de la variable a cambiado.");
    print(a);
-   b=5.0+a*3.0/10;
+   b=5.0+a*3.0/10 + 10;
    print("este es el valor de b");
    print(b);
 }
