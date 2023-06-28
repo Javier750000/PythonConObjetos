@@ -59,7 +59,7 @@ def p_programa(p):
     print("")
     print("El código pudo ser leído correctamente.")
     print("")
-    maquinaVirtual.ejecutar_maquina_virtual(directorio, constantes.tabla, cuadruplos)
+    maquinaVirtual.ejecutar_maquina_virtual(directorio, constantes.tabla, cuadruplos, avail)
 
 def p_inicializarDirectorio(p):
     '''

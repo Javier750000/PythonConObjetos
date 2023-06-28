@@ -7,10 +7,16 @@ main()
 {
    print("Ingrese el valor de la variable a.");
    read(a);
-   print("El valor de la variable a es el siguiente.");
+   if (a > 5)
+   {
+      a = 5;
+   } else
+   {
+      a = 2;
+   }
+   print("El valor de la variable a cambiado.");
    print(a);
-   b=4.0+a;
-   c=b/a;
-   print("El valor de la variable c es el siguiente.");
-   print(c);
+   b=5.0+a*3.0/10;
+   print("este es el valor de b");
+   print(b);
 }
