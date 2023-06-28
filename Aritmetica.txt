@@ -5,8 +5,9 @@ var
 
 main()
 {
-   a=3+1;
+   a=4/2;
    print(a);
-   f=3.14+a+30;
+   f=4.0+a;
+   b = f/a;
    print(f);
 }
