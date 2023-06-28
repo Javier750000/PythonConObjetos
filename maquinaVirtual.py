@@ -290,7 +290,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             
             if not valorBool:
                 # print("Se detectó un GoToF. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1) + ".")
-                apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+                apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1
                 continue
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "print":
