@@ -42,7 +42,7 @@ def p_programa(p):
     i=1
     for cuadruplo in cuadruplos.listaCuadruplos:
         print(f'{i}: {cuadruplo}')
-        i+=1;
+        i+=1
     print("")
 
     print("Pila de operandos: ")
@@ -181,7 +181,7 @@ def p_agregarParam(p):
     directorio.agregarParametros(p[-1], p[-2], pilaContextos[-1])
     dirV = avail.generarDireccionNueva(p[-2], "locales")
     directorio.agregarVariables(p[-1], p[-2], pilaContextos[-1], dirV)
-    directorio.contadorParametros+=1;
+    directorio.contadorParametros+=1
 
 def p_paramsAdicionales(p):
     '''

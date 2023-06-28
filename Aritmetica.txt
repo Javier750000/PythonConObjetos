@@ -10,13 +10,14 @@ main()
    if (a > 5)
    {
       a = 5;
-   } else
+   }
+   else
    {
       a = 2;
    }
-   print("El valor de la variable a cambiado.");
+   print("Este es el nuevo valor de la variable a.");
    print(a);
    b=5.0+a*3.0/10 + 10;
-   print("este es el valor de b");
+   print("Este es el valor de la variable b.");
    print(b);
 }
