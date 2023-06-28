@@ -8,11 +8,11 @@ class MaquinaVirtual:
         self.memoria = {}
         self.id = _id
 
-    def insertar(self, dir, valor):
-        self.memoria[dir] = valor
+    def insertar(self, dirV, valor):
+        self.memoria[dirV] = valor
 
-    def obtenerValorPorDir(self, dir):
-        return self.memoria[dir]
+    def obtenerValorPorDir(self, dirV):
+        return self.memoria[dirV]
 
 global memoriaLocal
 memoriaLocal = MaquinaVirtual(None)
@@ -20,7 +20,7 @@ memoriaGlobal = MaquinaVirtual("global")
 saltosPendientes = []
 
 def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: Constantes, cuadruplos: Cuadruplos):
-    print('Ejecutando máquina virtual: ')
+    print("Ejecutando máquina virtual: ")
     print("")
     global _directorioProc
     _directorioProc = directorioProcedimientos
@@ -34,214 +34,206 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
         i+=1;
     print("")
     while cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] != "End":
+        
         global memoriaLocal
 
-        if cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == '=':
-            print("ASIG",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+        if cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "=":
+            print("Asignación:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
             valor = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
-            dir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            # print("direccion", dir)
-            guardarEnMemoria(dir,valor)
+            dirV = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            #print("Dirección: ", dirV)
+            guardarEnMemoria(dirV, valor)
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "+":
-            print("SUMA",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
-            leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
-            rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
-            res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            # print("MEMORIALOCAL",memoriaLocal.memoria)
+            print("Suma:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            direccionIzq = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
+            direccionDer = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
+            resultado = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            #print("Memoria global: ", memoriaGlobal.memoria)
+            #print("Memoria local: ", memoriaLocal.memoria)
             
-            if leftDir in memoriaGlobal.memoria.keys():
-                leftVal = memoriaGlobal.memoria[leftDir]
-
-            if leftDir in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftDir]
+            if direccionIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[direccionIzq]
+            elif direccionIzq in memoriaGlobal.memoria.keys():
+                valorIzq = memoriaGlobal.memoria[direccionIzq]
             
-            if rightDir in memoriaGlobal.memoria.keys():
-                rightVal = memoriaGlobal.memoria[rightDir]
+            if direccionDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[direccionDer]
+            elif direccionDer in memoriaGlobal.memoria.keys():
+                valorDer = memoriaGlobal.memoria[direccionDer]
+
+            #print("Valor izquierdo: ", valorIzq)
+            #print("Valor derecho: ", valorDer)
+            #print(Resultado: ", resultado)
             
-            if rightDir in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightDir]
-
-            # print("leftVal", leftVal)
-            # print("rightVal", rightVal)
-            # print("res", res)
+            if type(valorIzq) != str and valorIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[valorIzq]
             
-            if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftVal]
-            
-            if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightVal]
+            if type(valorDer) != str and valorDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[valorDer]
 
-            # print("leftVal2", leftVal)
-            # print("rightVal2", rightVal)
+            #print("Valor izquierdo 2: ", valorIzq)
+            #print("Valor derecho 2: ", valorDer)
 
-            lFinal = convertirConstanteEnTipo(leftVal)
-            rFinal = convertirConstanteEnTipo(rightVal)
-            # print("tipo lef",type(leftVal))
-            # print("tipo rig",type(rightVal))
+            izqFinal = convertirConstanteEnTipo(valorIzq)
+            derFinal = convertirConstanteEnTipo(valorDer)
+            #print("Tipo izquierdo: ", type(valorIzq))
+            #print("Tipo derecho: ", type(valorDer))
 
-            valor = lFinal + rFinal
+            valor = izqFinal + derFinal
 
             if type(valor) == float:
-                valor = round(valor,10)
-            # print("VALOR", valor)
-            guardarEnMemoria(res, valor)
+                valor = round(valor, 10)
+            #print("Valor: ", valor)
+            guardarEnMemoria(resultado, valor)
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "-":
-            print("RESTA",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
-            leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
-            rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
-            res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            # print("MEMORIALOCAL",memoriaLocal.memoria)
+            print("Resta:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            direccionIzq = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
+            direccionDer = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
+            resultado = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            #print("Memoria global: ", memoriaGlobal.memoria)
+            #print("Memoria local: ", memoriaLocal.memoria)
             
-            if leftDir in memoriaGlobal.memoria.keys():
-                leftVal = memoriaGlobal.memoria[leftDir]
-
-            if leftDir in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftDir]
+            if direccionIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[direccionIzq]
+            elif direccionIzq in memoriaGlobal.memoria.keys():
+                valorIzq = memoriaGlobal.memoria[direccionIzq]
             
-            if rightDir in memoriaGlobal.memoria.keys():
-                rightVal = memoriaGlobal.memoria[rightDir]
+            if direccionDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[direccionDer]
+            elif direccionDer in memoriaGlobal.memoria.keys():
+                valorDer = memoriaGlobal.memoria[direccionDer]
+
+            #print("Valor izquierdo: ", valorIzq)
+            #print("Valor derecho: ", valorDer)
+            #print("Resultado: ", resultado)
             
-            if rightDir in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightDir]
-
-            # print("leftVal", leftVal)
-            # print("rightVal", rightVal)
-            # print("res", res)
+            if type(valorIzq) != str and valorIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[valorIzq]
             
-            if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftVal]
-            
-            if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightVal]
+            if type(valorDer) != str and valorDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[valorDer]
 
-            # print("leftVal2", leftVal)
-            # print("rightVal2", rightVal)
+            #print("Valor izquierdo 2: ", valorIzq)
+            #print("Valor derecho 2: ", valorDer)
 
-            lFinal = convertirConstanteEnTipo(leftVal)
-            rFinal = convertirConstanteEnTipo(rightVal)
-            # print("tipo lef",type(leftVal))
-            # print("tipo rig",type(rightVal))
+            izqFinal = convertirConstanteEnTipo(valorIzq)
+            derFinal = convertirConstanteEnTipo(valorDer)
+            #print("Tipo izquierdo: ", type(valorIzq))
+            #print("Tipo derecho: ", type(valorDer))
 
-            valor = lFinal - rFinal
+            valor = izqFinal - derFinal
 
             if type(valor) == float:
-                valor = round(valor,10)
-            # print("VALOR", valor)
-            guardarEnMemoria(res, valor)
+                valor = round(valor, 10)
+            #print("Valor: ", valor)
+            guardarEnMemoria(resultado, valor)
 
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "*":
-            print("MULT",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
-            leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
-            rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
-            res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            # print("MEMORIALOCAL",memoriaLocal.memoria)
+            print("Multiplicación:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            direccionIzq = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
+            direccionDer = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
+            resultado = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            #print("Memoria global: ", memoriaGlobal.memoria)
+            #print("Memoria local: ", memoriaLocal.memoria)
             
-            if leftDir in memoriaGlobal.memoria.keys():
-                leftVal = memoriaGlobal.memoria[leftDir]
-
-            if leftDir in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftDir]
+            if direccionIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[direccionIzq]
+            elif direccionIzq in memoriaGlobal.memoria.keys():
+                valorIzq = memoriaGlobal.memoria[direccionIzq]
             
-            if rightDir in memoriaGlobal.memoria.keys():
-                rightVal = memoriaGlobal.memoria[rightDir]
+            if direccionDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[direccionDer]
+            elif direccionDer in memoriaGlobal.memoria.keys():
+                valorDer = memoriaGlobal.memoria[direccionDer]
+
+            #print("Valor izquierdo: ", valorIzq)
+            #print("Valor derecho: ", valorDer)
+            #print("Resultado: ", resultado)
             
-            if rightDir in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightDir]
-
-            # print("leftVal", leftVal)
-            # print("rightVal", rightVal)
-            # print("res", res)
+            if type(valorIzq) != str and valorIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[valorIzq]
             
-            if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftVal]
-            
-            if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightVal]
+            if type(valorDer) != str and valorDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[valorDer]
 
-            # print("leftVal2", leftVal)
-            # print("rightVal2", rightVal)
+            #print("Valor izquierdo 2: ", valorIzq)
+            #print("Valor derecho 2: ", valorDer)
 
-            lFinal = convertirConstanteEnTipo(leftVal)
-            rFinal = convertirConstanteEnTipo(rightVal)
-            # print("tipo lef",type(leftVal))
-            # print("tipo rig",type(rightVal))
+            izqFinal = convertirConstanteEnTipo(valorIzq)
+            derFinal = convertirConstanteEnTipo(valorDer)
+            #print("Tipo izquierdo: ", type(valorIzq))
+            #print("Tipo derecho: ", type(valorDer))
 
-            valor = lFinal * rFinal
+            valor = izqFinal * derFinal
 
             if type(valor) == float:
-                valor = round(valor,10)
-            # print("VALOR", valor)
-            guardarEnMemoria(res, valor)
+                valor = round(valor, 10)
+            #print("Valor: ", valor)
+            guardarEnMemoria(resultado, valor)
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "/":
-            print("DIV",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
-            leftDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
-            rightDir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
-            res = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            # print("MEMORIAGLOBAL",memoriaGlobal.memoria)
-            # print("MEMORIALOCAL",memoriaLocal.memoria)
+            print("División:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            direccionIzq = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
+            direccionDer = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
+            resultado = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            #print("Memoria global: ", memoriaGlobal.memoria)
+            #print("Memoria local: ", memoriaLocal.memoria)
             
-            if leftDir in memoriaGlobal.memoria.keys():
-                leftVal = memoriaGlobal.memoria[leftDir]
-
-            if leftDir in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftDir]
+            if direccionIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[direccionIzq]
+            elif direccionIzq in memoriaGlobal.memoria.keys():
+                valorIzq = memoriaGlobal.memoria[direccionIzq]
             
-            if rightDir in memoriaGlobal.memoria.keys():
-                rightVal = memoriaGlobal.memoria[rightDir]
+            if direccionDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[direccionDer]
+            elif direccionDer in memoriaGlobal.memoria.keys():
+                valorDer = memoriaGlobal.memoria[direccionDer]
+
+            #print("Valor izquierdo: ", valorIzq)
+            #print("Valor derecho: ", valorDer)
+            #print("Resultado: ", resultado)
             
-            if rightDir in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightDir]
-
-            # print("leftVal", leftVal)
-            # print("rightVal", rightVal)
-            # print("res", res)
+            if type(valorIzq) != str and valorIzq in memoriaLocal.memoria.keys():
+                valorIzq = memoriaLocal.memoria[valorIzq]
             
-            if type(leftVal) != str and leftVal in memoriaLocal.memoria.keys():
-                leftVal = memoriaLocal.memoria[leftVal]
-            
-            if type(rightVal) != str and rightVal in memoriaLocal.memoria.keys():
-                rightVal = memoriaLocal.memoria[rightVal]
+            if type(valorDer) != str and valorDer in memoriaLocal.memoria.keys():
+                valorDer = memoriaLocal.memoria[valorDer]
 
-            # print("leftVal2", leftVal)
-            # print("rightVal2", rightVal)
+            #print("Valor izquierdo 2: ", valorIzq)
+            #print("Valor derecho 2: ", valorDer)
 
-            lFinal = convertirConstanteEnTipo(leftVal)
-            rFinal = convertirConstanteEnTipo(rightVal)
+            izqFinal = convertirConstanteEnTipo(valorIzq)
+            derFinal = convertirConstanteEnTipo(valorDer)
 
-            # print("tipo lef",type(leftVal))
-            # print("tipo rig",type(rightVal))
+            #print("Tipo izquierdo: ", type(valorIzq))
+            #print("Tipo derecho: ", type(valorDer))
 
-            if type(lFinal) == int and type(rFinal) == int:
-                valor = lFinal // rFinal
+            if type(izqFinal) == int and type(derFinal) == int:
+                valor = izqFinal // derFinal
             else:
-                valor = lFinal / rFinal
+                valor = izqFinal / derFinal
 
             if type(valor) == float:
-                valor = round(valor,10)
+                valor = round(valor, 10)
 
-            # print("VALOR", valor)
-            guardarEnMemoria(res, valor)
+            #print("Valor: ", valor)
+            guardarEnMemoria(resultado, valor)
 
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "print":
-            dir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
             
-            if dir in memoriaGlobal.memoria.keys():
-                valorPrint = memoriaGlobal.memoria[dir]
-
-            if dir in memoriaLocal.memoria.keys():
-                valorPrint = memoriaLocal.memoria[dir]
-
-            if valorPrint in memoriaGlobal.memoria.keys():
-                valorFinal = memoriaGlobal.memoria[valorPrint]
+            dirV = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            
+            if dirV in memoriaLocal.memoria.keys():
+                valorPrint = memoriaLocal.memoria[dirV]
+            elif dirV in memoriaGlobal.memoria.keys():
+                valorPrint = memoriaGlobal.memoria[dirV]
 
             if valorPrint in memoriaLocal.memoria.keys():
                 valorFinal = memoriaLocal.memoria[valorPrint]
+            elif valorPrint in memoriaGlobal.memoria.keys():
+                valorFinal = memoriaGlobal.memoria[valorPrint]
             else:
                 valorFinal = valorPrint
             
@@ -256,48 +248,46 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
         
     print("")
     print("Memoria en la máquina virtual: ")
-    print("GLOBAL",memoriaGlobal.memoria)
-    print("LOCAL",memoriaLocal.memoria)
+    print("Global: ", memoriaGlobal.memoria)
+    print("Local: ", memoriaLocal.memoria)
 
-def guardarEnMemoria(dir, valor):
+def guardarEnMemoria(dirV, valor):
     global memoriaLocalActual
-    if esVariableGlobal(dir):
-        memoriaGlobal.insertar(dir, valor)
+    if esVariableGlobal(dirV):
+        memoriaGlobal.insertar(dirV, valor)
     else:
-        memoriaLocal.insertar(dir, valor)
+        memoriaLocal.insertar(dirV, valor)
 
-def esVariableGlobal(dir):
-    if (dir >= 0 and dir <= 11999) or (dir >= 36000 and dir <= 47999):
+def esVariableGlobal(dirV):
+    if (dirV >= 0 and dirV <= 11999) or (dirV >= 36000 and dirV <= 47999):
         return True
     return False
 
-
-def traducirDirVirtualConstante(dir):
-    diff = 0
-    if dir >= 0 and dir <= 2999:
-        diff = dir
-        return 36000+diff
-    elif dir >= 3000 and dir <= 5999:
-        diff = dir - 3000
-        return 39000+diff
-    elif dir >= 6000 and dir <= 8999:
-        diff = dir - 6000
-        return 42000-diff
-    elif dir >= 9000 and dir <= 11999:
-        diff = dir - 9000
-        return 45000+diff
-    
+def traducirDirVirtualConstante(dirV):
+    diferencia = 0
+    if dirV >= 0 and dirV <= 2999:
+        diferencia = dirV
+        return 36000 + diferencia
+    elif dirV >= 3000 and dirV <= 5999:
+        diferencia = dirV - 3000
+        return 39000 + diferencia
+    elif dirV >= 6000 and dirV <= 8999:
+        diferencia = dirV - 6000
+        return 42000 - diferencia
+    elif dirV >= 9000 and dirV <= 11999:
+        diferencia = dirV - 9000
+        return 45000 + diferencia
 
 def convertirConstanteEnTipo(valor):
     if type(valor) == str:
         if valor.isdigit():
-            # print("Yes it is Integer")
+            #print("Es entero.")
             return int(valor)
         elif valor.replace('.','',1).isdigit() and valor.count('.') < 2:
-            # print("Its Float")
+            #print("Es flotante.")
             return float(valor)
         else:
-            print("Its is Neither Integer Nor Float! Something else")
+            print("No es ni entero ni flotante.")
             return valor
     else:
         return valor

@@ -1,13 +1,16 @@
 program patito;
 var
-   float: b, f;
+   float: b, c;
    int: a;
 
 main()
 {
+   print("Ingrese el valor de la variable a.");
    read(a);
+   print("El valor de la variable a es el siguiente.");
    print(a);
-   f=4.0+a;
-   b = f/a;
-   print(f);
+   b=4.0+a;
+   c=b/a;
+   print("El valor de la variable c es el siguiente.");
+   print(c);
 }
