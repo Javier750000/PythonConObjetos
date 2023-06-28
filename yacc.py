@@ -886,7 +886,7 @@ def p_insertarEnteros(p):
     insertarEnteros : empty
     '''
     if constantes.tabla.get(str(p[-1])) is None:
-        dirV = avail.generarDireccionNueva("int", "constantes")
+        dirV = avail.generarDireccionNueva("int", "globales")
         constantes.agregarConstante(str(p[-1]), 'int', dirV)
     pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
     pilaTipos.append("int")
@@ -896,7 +896,7 @@ def p_insertarFlotantes(p):
     insertarFlotantes : empty
     '''
     if constantes.tabla.get(str(p[-1])) is None:
-        dirV = avail.generarDireccionNueva("float", "constantes")
+        dirV = avail.generarDireccionNueva("float", "globales")
         constantes.agregarConstante(str(p[-1]), 'float', dirV)
     pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
     pilaTipos.append("float")
@@ -906,7 +906,7 @@ def p_insertarStrings(p):
     insertarStrings : empty
     '''
     if constantes.tabla.get(str(p[-1])) is None:
-        dirV = avail.generarDireccionNueva("char", "constantes")
+        dirV = avail.generarDireccionNueva("char", "globales")
         constantes.agregarConstante(str(p[-1]), 'char', dirV)
     pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
     pilaTipos.append("char")
@@ -916,7 +916,7 @@ def p_insertarBooleanos(p):
     insertarBooleanos : empty
     '''
     if constantes.tabla.get(str(p[-1])) is None:
-        dirV = avail.generarDireccionNueva("bool", "constantes")
+        dirV = avail.generarDireccionNueva("bool", "globales")
         constantes.agregarConstante(str(p[-1]), 'bool', dirV)
     pilaOperandos.append(constantes.tabla[str(p[-1])]["direccionVirtual"])
     pilaTipos.append("bool")
