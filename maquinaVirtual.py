@@ -42,7 +42,6 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             dir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
             # print("direccion", dir)
             guardarEnMemoria(dir,valor)
-            apuntadorInstrucciones+=1
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "+":
             print("SUMA",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -88,7 +87,6 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 valor = round(valor,10)
             # print("VALOR", valor)
             guardarEnMemoria(res, valor)
-            apuntadorInstrucciones += 1
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "-":
             print("RESTA",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -134,7 +132,6 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 valor = round(valor,10)
             # print("VALOR", valor)
             guardarEnMemoria(res, valor)
-            apuntadorInstrucciones+=1
 
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "*":
             print("MULT",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -180,7 +177,6 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 valor = round(valor,10)
             # print("VALOR", valor)
             guardarEnMemoria(res, valor)
-            apuntadorInstrucciones+=1
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "/":
             print("DIV",cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -231,13 +227,37 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
 
             # print("VALOR", valor)
             guardarEnMemoria(res, valor)
-            apuntadorInstrucciones+=1
-        else:
-            apuntadorInstrucciones+=1
+
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "print":
+            dir = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            
+            if dir in memoriaGlobal.memoria.keys():
+                valorPrint = memoriaGlobal.memoria[dir]
+
+            if dir in memoriaLocal.memoria.keys():
+                valorPrint = memoriaLocal.memoria[dir]
+
+            if valorPrint in memoriaGlobal.memoria.keys():
+                valorFinal = memoriaGlobal.memoria[valorPrint]
+
+            if valorPrint in memoriaLocal.memoria.keys():
+                valorFinal = memoriaLocal.memoria[valorPrint]
+            else:
+                valorFinal = valorPrint
+            
+            print(str(valorFinal))
+
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "read":
+            resultado = input()
+            resultadoConvertido = convertirConstanteEnTipo(resultado)
+            guardarEnMemoria(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3], resultadoConvertido)
+        
+        apuntadorInstrucciones+=1
+        
     print("")
-    print("Memoria global en la máquina virtual: ")
-    pprint(memoriaGlobal.memoria)
-    pprint(memoriaLocal.memoria)
+    print("Memoria en la máquina virtual: ")
+    print("GLOBAL",memoriaGlobal.memoria)
+    print("LOCAL",memoriaLocal.memoria)
 
 def guardarEnMemoria(dir, valor):
     global memoriaLocalActual
@@ -271,10 +291,10 @@ def traducirDirVirtualConstante(dir):
 def convertirConstanteEnTipo(valor):
     if type(valor) == str:
         if valor.isdigit():
-            print("Yes it is Integer")
+            # print("Yes it is Integer")
             return int(valor)
         elif valor.replace('.','',1).isdigit() and valor.count('.') < 2:
-            print("Its Float")
+            # print("Its Float")
             return float(valor)
         else:
             print("Its is Neither Integer Nor Float! Something else")

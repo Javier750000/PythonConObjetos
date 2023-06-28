@@ -5,7 +5,7 @@ var
 
 main()
 {
-   a=4/2;
+   read(a);
    print(a);
    f=4.0+a;
    b = f/a;
