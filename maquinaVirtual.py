@@ -71,7 +71,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(valor) == float:
                 valor = round(valor, 10)
             #print("Valor suma:", valor)
-            guardarEnMemoria(resultado, valor)
+            guardarEnMemoria(resultado, str(valor))
 
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "-":
             # print("Resta:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -97,7 +97,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(valor) == float:
                 valor = round(valor, 10)
             #print("Valor resta:", valor)
-            guardarEnMemoria(resultado, valor)
+            guardarEnMemoria(resultado, str(valor))
 
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "*":
             # print("Multiplicación:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -119,7 +119,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             if type(valor) == float:
                 valor = round(valor, 10)
             #print("Valor multiplicación:", valor)
-            guardarEnMemoria(resultado, valor)
+            guardarEnMemoria(resultado, str(valor))
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "/":
             # print("División:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -149,7 +149,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 valor = round(valor, 10)
 
             #print("Valor división:", valor)
-            guardarEnMemoria(resultado, valor)
+            guardarEnMemoria(resultado, str(valor))
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == ">":
             # print("Mayor que:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -201,13 +201,16 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             direccionIzq = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             direccionDer = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
 
+            # print("MENOR QUE direccionIzq:", direccionIzq)
+            # print("MENOR QUE direccionDer:", direccionDer)
+
             resultado = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
 
             valorIzq = extraerValorPorDirVirtual(direccionIzq)
             valorDer = extraerValorPorDirVirtual(direccionDer)
 
-            # print("Valor izquierdo 2:", valorIzq)
-            # print("Valor derecho 2:", valorDer)
+            # print("MENOR QUE Valor izquierdo 2:", valorIzq)
+            # print("MENOR QUE Valor derecho 2:", valorDer)
             
             izqFinal = convertirConstanteEnTipo(valorIzq)
             derFinal = convertirConstanteEnTipo(valorDer)
@@ -280,18 +283,23 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
 
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == 'GoTo' and not apuntadorInstrucciones == 0:
             # if quadruples[instruction_pointer][4] is not None:
-            # print("Se detectó un GoTo. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]) + ".")
+            # print("Se detectó un GoTo. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1) + ".")
             apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-2
+            # print("GOTO",cuadruplos.listaCuadruplos[apuntadorInstrucciones][3])
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "GoToF":
             # print("GoToF", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
             direccionBool = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             valorBool = extraerValorPorDirVirtual(direccionBool)
+            # print("GOTOF",valorBool)
             
             if not valorBool:
                 # print("Se detectó un GoToF. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1) + ".")
                 apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1
                 continue
+            # else:
+            #     apuntadorInstrucciones +=1
+            #     continue
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "print":
             # print("Escritura:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -311,7 +319,9 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             else:
                 resultadoConvertido = avail.generarDireccionNueva("char", "globales")
             
-            # print("Resultado convertido:", resultadoConvertido)
+            # print("Resultado direccion:", resultadoConvertido)
+            # print("direccion cuadruplos:", cuadruplos.listaCuadruplos[apuntadorInstrucciones][3])
+            # print("resultado tipo:", resultadoTipo)
             guardarEnMemoria(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3], resultadoConvertido)
             guardarEnMemoria(resultadoConvertido, resultado)
 

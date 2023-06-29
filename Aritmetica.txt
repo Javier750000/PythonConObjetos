@@ -11,8 +11,13 @@ main()
    if (a > 5)
    {
       a = 5;
+   } else
+   {
+      a = 3;
    }
    while (i < a+1) {
+      print("i", i);
+      print("a", a+1);
       print("print while");
       i = i+1;
    }
