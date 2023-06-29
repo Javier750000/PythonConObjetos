@@ -1,23 +1,21 @@
 program patito;
 var
    float: b, c;
-   int: a;
+   int: a, i;
 
 main()
 {
+   i = 0;
    print("Ingrese el valor de la variable a.");
    read(a);
    if (a > 5)
    {
       a = 5;
    }
-   else
-   {
-      a = 2;
+   while (i < a+1) {
+      print("print while");
+      i = i+1;
    }
    print("Este es el nuevo valor de la variable a.");
    print(a);
-   b=5.0+a*3.0/10 + 10;
-   print("Este es el valor de la variable b.");
-   print(b);
 }
