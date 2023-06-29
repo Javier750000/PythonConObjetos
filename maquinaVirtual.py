@@ -281,6 +281,48 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             valor = bool(izqFinal != derFinal)
             guardarEnMemoria(resultado, valor)
 
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "&&":
+            # print("And:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            # print("Global:", memoriaGlobal.memoria)
+            # print("Local:", memoriaLocal.memoria)
+            direccionIzq = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
+            direccionDer = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
+
+            resultado = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+
+            valorIzq = extraerValorPorDirVirtual(direccionIzq)
+            valorDer = extraerValorPorDirVirtual(direccionDer)
+
+            # print("Valor izquierdo 2:", valorIzq)
+            # print("Valor derecho 2:", valorDer)
+            
+            izqFinal = convertirConstanteEnTipo(valorIzq)
+            derFinal = convertirConstanteEnTipo(valorDer)
+
+            valor = bool(izqFinal and derFinal)
+            guardarEnMemoria(resultado, valor)
+
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "||":
+            # print("Or:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            # print("Global:", memoriaGlobal.memoria)
+            # print("Local:", memoriaLocal.memoria)
+            direccionIzq = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
+            direccionDer = cuadruplos.listaCuadruplos[apuntadorInstrucciones][2]
+
+            resultado = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+
+            valorIzq = extraerValorPorDirVirtual(direccionIzq)
+            valorDer = extraerValorPorDirVirtual(direccionDer)
+
+            # print("Valor izquierdo 2:", valorIzq)
+            # print("Valor derecho 2:", valorDer)
+            
+            izqFinal = convertirConstanteEnTipo(valorIzq)
+            derFinal = convertirConstanteEnTipo(valorDer)
+
+            valor = bool(izqFinal or derFinal)
+            guardarEnMemoria(resultado, valor)
+
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == 'GoTo' and not apuntadorInstrucciones == 0:
             # if quadruples[instruction_pointer][4] is not None:
             # print("Se detectó un GoTo. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1) + ".")
