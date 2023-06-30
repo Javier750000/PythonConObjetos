@@ -1,7 +1,6 @@
 program patito;
 var
-   float: b, c;
-   int: a, i;
+   int: a, b;
 
 
 func int uno(int aba, int hola)
@@ -21,19 +20,22 @@ func float doble(float z)
 
 main()
 {
-   i = 0;
    print("Ingrese el valor de la variable a.");
    read(a);
-   if (a > 5)
+   print("Ingrese el valor de la variable b.");
+   read(b);
+   if (a == 5 && b == 10)
    {
-      a = 5;
+      print("El and es verdadero.");
+   } else
+   {
+      print("El and es falso.");
    }
-   while (i < a) {
-      print("print while");
-      i = i+1;
+   if (a == 5 || b == 10)
+   {
+      print("El or es verdadero.");
+   } else
+   {
+      print("El or es falso.");
    }
-   print(uno(2, 1));
-   print(doble(1.0));
-   print("Este es el nuevo valor de la variable a.");
-   print(a);
 }
