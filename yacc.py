@@ -620,7 +620,7 @@ def p_generarParam(p):
     if argumentoTipo != directorio.tabla[nombreFuncion]["listaTiposParametros"][k-1]:
         raise Exception("El tipo del parámetro recibido en la llamada no corresponde con el tipo del parámetro en la declaración de la función.")
     else:
-        cuadruplos.generarCuadruploNuevo('param', argumento, None, 'param'+str(k))
+        cuadruplos.generarCuadruploNuevo('param', argumento, None, directorio.tabla[nombreFuncion]["listaNombresParametros"][k-1])
 
 def p_hiperexpresionesAdicionales(p):
     '''

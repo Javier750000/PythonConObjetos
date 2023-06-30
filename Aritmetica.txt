@@ -3,6 +3,22 @@ var
    float: b, c;
    int: a, i;
 
+
+func int uno(int aba, int hola)
+var
+   int: x;
+{
+   x=1;
+   print(x);
+   return (x);
+}
+
+func float doble(float z)
+{
+   return (2.0);
+}
+
+
 main()
 {
    i = 0;
@@ -11,16 +27,13 @@ main()
    if (a > 5)
    {
       a = 5;
-   } else
-   {
-      a = 3;
    }
-   while (i < a+1) {
-      print("i", i);
-      print("a", a+1);
+   while (i < a) {
       print("print while");
       i = i+1;
    }
+   print(uno(2, 1));
+   print(doble(1.0));
    print("Este es el nuevo valor de la variable a.");
    print(a);
 }

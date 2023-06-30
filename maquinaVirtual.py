@@ -18,6 +18,8 @@ class MaquinaVirtual:
 global memoriaLocal
 memoriaLocal = MaquinaVirtual(None)
 memoriaGlobal = MaquinaVirtual("global")
+stackMemoria = []
+stackMemoria.append(memoriaGlobal)
 saltosPendientes = []
 
 def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: Constantes, cuadruplos: Cuadruplos, avail: Avail):
@@ -281,7 +283,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             valor = bool(izqFinal != derFinal)
             guardarEnMemoria(resultado, valor)
 
-        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == 'GoTo' and not apuntadorInstrucciones == 0:
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == 'GoTo':
             # if quadruples[instruction_pointer][4] is not None:
             # print("Se detectó un GoTo. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1) + ".")
             apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-2
@@ -297,10 +299,16 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 # print("Se detectó un GoToF. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1) + ".")
                 apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1
                 continue
-            # else:
-            #     apuntadorInstrucciones +=1
-            #     continue
-        
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "param":
+            # Obtain paramater index
+            indiceParametro = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1] - 1  ## ???
+            # print(current_local_memory.return_val())
+            dirVParam = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
+
+            valor = extraerValorPorDirVirtual(dirVParam)
+            dirVirtualEnNuevoContexto = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            stackMemoria[-1].memoria[dirVirtualEnNuevoContexto] = valor
+            # instruction_pointer += 1
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "print":
             # print("Escritura:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
             dirV = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
