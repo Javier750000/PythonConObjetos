@@ -19,6 +19,7 @@ global memoriaLocal
 memoriaLocal = MaquinaVirtual(None)
 memoriaGlobal = MaquinaVirtual("global")
 stackMemoria = []
+esFuncion = False
 stackMemoria.append(memoriaGlobal)
 saltosPendientes = []
 
@@ -44,9 +45,18 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             # print("Asignación:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
             valor = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             dirV = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-
-            # print("Dirección asignación:", dirV)
-            guardarEnMemoria(dirV, valor)
+            #print("VALOR:", valor)
+            if(esFuncion):
+                # print("VALOR EN IF:", valor)
+                valorFinal = extraerValorPorDirVirtual(valor)
+                # print("VALORFINAL EN IF:", valorFinal)
+                guardarEnMemoria(dirV,valorFinal)
+            else:    
+                # print("Dirección asignación:", dirV)
+                # print("VALOR EN ASIG:", valor)
+                guardarEnMemoria(dirV, valor)
+                # print("MEMORIA GLOBAL EN ASIG:",memoriaGlobal.memoria)
+                # print("MEMORIA LOCAL EN ASIG:",memoriaLocal.memoria)
         
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "+":
             # print("Suma:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
@@ -325,7 +335,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             valor = bool(izqFinal or derFinal)
             guardarEnMemoria(resultado, valor)
 
-        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == 'GoTo' and not apuntadorInstrucciones == 0:
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == 'GoTo':
             # if quadruples[instruction_pointer][4] is not None:
             # print("Se detectó un GoTo. El apuntador de instrucciones se cambió al cuádruplo: " + str(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-1) + ".")
             apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]-2
@@ -346,11 +356,75 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             indiceParametro = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1] - 1  ## ???
             # print(current_local_memory.return_val())
             dirVParam = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
-
-            valor = extraerValorPorDirVirtual(dirVParam)
+            # print("DIR PARAM:",dirVParam)
             dirVirtualEnNuevoContexto = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
-            stackMemoria[-1].memoria[dirVirtualEnNuevoContexto] = valor
+            valor = extraerValorPorDirVirtual(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3])
+            stackMemoria[-1].memoria[dirVParam] = valor
             # instruction_pointer += 1
+        
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "ERA":
+            nombreFuncion = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
+            nombreSeparado = nombreFuncion.split(".")
+
+            if len(nombreSeparado) != 1:
+                continue
+            else:
+                # print("NOMBRE FUNC:",nombreFuncion)
+                funcion = directorioProcedimientos.tabla[nombreFuncion]
+                # print("DIRECTORIO EN ERA:",funcion)
+                memoriaNuevoContexto = MaquinaVirtual(nombreFuncion)
+                for variable in funcion["tablaVariables"].items():
+                    # print("variables ERA:", variable[1]["direccionVirtual"])
+                    memoriaNuevoContexto.insertar(variable[1]["direccionVirtual"], None)
+                funcionDataGlobal = directorioProcedimientos.tabla["global"]["tablaVariables"][nombreFuncion]
+                memoriaNuevoContexto.insertar(funcionDataGlobal["direccionVirtual"], nombreFuncion)
+                # print("memoria NUEVO CONTEXTO:", memoriaNuevoContexto.memoria)
+                stackMemoria.append(memoriaNuevoContexto)
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "GoSub":
+            esFuncion=True
+            # print("cuadruplo GOSUB:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            saltosPendientes.append(apuntadorInstrucciones+1)
+            # print("stackMEMORIA GOSUB", stackMemoria[-1].memoria)
+            memoriaLocal = stackMemoria[-1]
+            # print("memoriaLocal en GOSUB:",memoriaLocal.memoria)
+            apuntadorInstrucciones = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3] - 2
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "Return":
+            if cuadruplos.listaCuadruplos[apuntadorInstrucciones][1] is not None:
+                apuntadorReturn = saltosPendientes.pop()
+                apuntadorInstrucciones = apuntadorReturn
+                continue
+            else:
+                apuntadorReturn = 0
+                if not (len(stackMemoria) <= 1):
+                    # print("memoria en RETURN:")
+                    #for espacio in stackMemoria:
+                        # print("Espacio En RETURN:", espacio.memoria)
+                    memoriaBorrada = stackMemoria.pop()
+                    nuevaMemoria = stackMemoria[-1]
+                    # print("memoria FINAL RETURN:",stackMemoria[-1].memoria)
+                    memoriaLocal = nuevaMemoria
+                    apuntadorReturn = saltosPendientes.pop()
+                    apuntadorInstrucciones = apuntadorReturn
+                    continue
+        
+        elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "EndFunc":
+            esFuncion=False
+            if cuadruplos.listaCuadruplos[apuntadorInstrucciones][1] is not None:
+                apuntadorReturn = saltosPendientes.pop()
+                apuntadorInstrucciones = apuntadorReturn
+                continue
+            else:
+                apuntadorReturn = 0
+                if not (len(stackMemoria) <= 1):
+                    # print("memoria en ENDFUNC:")
+                    #for espacio in stackMemoria:
+                        # print("Espacio EN ENDFUNC:", espacio.memoria)
+                    memoriaBorrada = stackMemoria.pop()
+                    nuevaMemoria = stackMemoria[-1]
+                    memoriaLocal = nuevaMemoria
+                    apuntadorReturn = saltosPendientes.pop()
+                    apuntadorInstrucciones = apuntadorReturn
+                    continue
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "print":
             # print("Escritura:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
             dirV = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
@@ -382,11 +456,14 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
     print("Memoria en la máquina virtual: ")
     print("Global:", memoriaGlobal.memoria)
     print("Local:", memoriaLocal.memoria)
+    print("STACK:")
+    for espacio in stackMemoria:
+        print("Espacio:", espacio.memoria)
     memoriaGlobal.memoria = {}
     memoriaLocal.memoria = {}
 
 def guardarEnMemoria(dirV, valor):
-    global memoriaLocalActual
+    global memoriaLocal
     if esVariableGlobal(dirV):
         memoriaGlobal.insertar(dirV, valor)
     else:
@@ -430,12 +507,15 @@ def convertirConstanteEnTipo(valor):
 def extraerValorPorDirVirtual(dir):
     valorTentativo = None
     valorFinal = None
+    # print("MEMORIA GLOBAL AL EXTRAER:", memoriaGlobal.memoria)
+    # print("MEMORIA LOCAL AL EXTRAER:", memoriaLocal.memoria)
     if dir in memoriaGlobal.memoria.keys():
         valorTentativo = memoriaGlobal.memoria[dir]
 
     if dir in memoriaLocal.memoria.keys():
         valorTentativo = memoriaLocal.memoria[dir]
     
+    # print("DIR AL EXTRAER:", dir)
     # print("Valor tentativo:", valorTentativo)
     valorFinal = valorTentativo
 

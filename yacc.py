@@ -152,7 +152,6 @@ def p_terminarFuncion(p):
     '''
     terminarFuncion : empty
     '''
-    directorio.tabla[pilaContextos[-1]]["tablaVariables"].clear()
     cuadruplos.generarCuadruploNuevo('EndFunc', None, None, None)
     print("Número de temporales:")
     directorio.temporales = avail.regresarDireccionesOcupadas('temporales')
@@ -620,7 +619,8 @@ def p_generarParam(p):
     if argumentoTipo != directorio.tabla[nombreFuncion]["listaTiposParametros"][k-1]:
         raise Exception("El tipo del parámetro recibido en la llamada no corresponde con el tipo del parámetro en la declaración de la función.")
     else:
-        cuadruplos.generarCuadruploNuevo('param', argumento, None, directorio.tabla[nombreFuncion]["listaNombresParametros"][k-1])
+        idParam = directorio.tabla[nombreFuncion]["listaNombresParametros"][k-1]
+        cuadruplos.generarCuadruploNuevo('param', directorio.tabla[nombreFuncion]["tablaVariables"][idParam]["direccionVirtual"], None, argumento)
 
 def p_hiperexpresionesAdicionales(p):
     '''
@@ -661,11 +661,15 @@ def p_retorno(p):
     retorno : RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA
     '''
     tipoFuncion = directorio.tabla[pilaContextos[-1]]["tipoFuncion"]
+    print("DIRECTORIO:",directorio.tabla)
+    print("IMPRIMIR PILA OP:",pilaOperandos)
     retorno = pilaOperandos.pop()
     tipoRetorno = pilaTipos.pop()
     if tipoRetorno != tipoFuncion:
         raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
     else:
+        direccionGlobalFuncion = directorio.tabla["global"]["tablaVariables"][pilaContextos[-1]]["direccionVirtual"]
+        cuadruplos.generarCuadruploNuevo('=',retorno, None, direccionGlobalFuncion)
         cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
         global contadorRetorno
         contadorRetorno+=1

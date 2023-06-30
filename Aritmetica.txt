@@ -3,18 +3,20 @@ var
    int: a, b;
 
 
-func int uno(int aba, int hola)
+func float uno(float b)
 var
-   int: x;
-{
-   x=1;
-   print(x);
-   return (x);
+   float: a;
+{  
+   a = 4.5+b;
+   return (a);
 }
 
 func float doble(float z)
-{
-   return (2.0);
+var
+   float: y;
+{  
+   y = (2*uno(5.5)+uno(5.5))/3.0;
+   return (y);
 }
 
 
@@ -22,20 +24,13 @@ main()
 {
    print("Ingrese el valor de la variable a.");
    read(a);
-   print("Ingrese el valor de la variable b.");
-   read(b);
-   if (a == 5 && b == 10)
+   if(a > 10)
    {
-      print("El and es verdadero.");
-   } else
+      print("Se llama a uno");
+      print(uno(1.0));
+   }else
    {
-      print("El and es falso.");
-   }
-   if (a == 5 || b == 10)
-   {
-      print("El or es verdadero.");
-   } else
-   {
-      print("El or es falso.");
+      print("funcion doble");
+      print(doble(1.0));
    }
 }
