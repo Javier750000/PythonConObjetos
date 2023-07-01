@@ -122,7 +122,7 @@ def p_funcionSimple(p):
 
 def p_funcionVoid(p):
     '''
-    funcionVoid : FUNC VOID ID agregarFuncion PARENTESISINICIAL param PARENTESISFINAL contadorParametros vars2 contadorLocales contadorCuadruplos bloque terminarFuncion eliminarContexto funciones
+    funcionVoid : FUNC VOID ID agregarFuncion PARENTESISINICIAL paramIntermedio PARENTESISFINAL contadorParametros vars2 contadorLocales contadorCuadruplos bloque terminarFuncion eliminarContexto funciones
     '''
 
 def p_agregarFuncion(p):
@@ -132,6 +132,7 @@ def p_agregarFuncion(p):
     directorio.agregarFuncion(p[-1], p[-2], cuadruplos.contador)
     global nombreFuncion
     nombreFuncion = p[-1]
+    tipoFuncion = p[-2]
     pilaContextos.append(p[-1])
     directorio.contadorParametros = 0
     directorio.reinicializarContadorLocales()
@@ -139,8 +140,11 @@ def p_agregarFuncion(p):
     global contadorRetornoCondicional
     contadorRetorno = 0
     contadorRetornoCondicional = 0
-    dirV = avail.generarGlobalNuevo(p[-2])
-    directorio.agregarVariables(nombreFuncion, directorio.tabla[nombreFuncion]["tipoFuncion"], "global", dirV)
+    if(tipoFuncion != "void"):
+        dirV = avail.generarGlobalNuevo(p[-2])
+        directorio.agregarVariables(nombreFuncion, directorio.tabla[nombreFuncion]["tipoFuncion"], "global", dirV)
+    else:
+        directorio.agregarVariables(nombreFuncion, directorio.tabla[nombreFuncion]["tipoFuncion"], "global", None)
 
 def p_eliminarContexto(p):
     '''
@@ -166,6 +170,12 @@ def p_terminarFuncion(p):
                 raise Exception("No se incluyó un retorno en la función «"+pilaContextos[-1]+"».")
             elif contadorRetornoElse < 1:
                 raise Exception("No se incluyó un retorno para el caso else en la función «"+pilaContextos[-1]+"».")
+
+def p_paramIntermedio(p):
+    '''
+    paramIntermedio : param
+                    | empty
+    '''
 
 def p_param(p):
     '''
@@ -579,6 +589,7 @@ def p_llamada(p):
     '''
     llamada : ID existeFuncion PARENTESISINICIAL generarERA listaHiperexpresiones validarNulo PARENTESISFINAL generarGoSub
             | ID PUNTO ID PARENTESISINICIAL listaHiperexpresiones PARENTESISFINAL
+            | empty
     '''
     p[0] = p[1]
 
@@ -612,15 +623,17 @@ def p_generarParam(p):
     '''
     generarParam : empty
     '''
-    argumento = pilaOperandos.pop()
-    argumentoTipo = pilaTipos.pop()
-    if k > len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
-        raise Exception("Se están mandando parámetros de más en la llamada a la función «"+nombreFuncion+"».")
-    if argumentoTipo != directorio.tabla[nombreFuncion]["listaTiposParametros"][k-1]:
-        raise Exception("El tipo del parámetro recibido en la llamada no corresponde con el tipo del parámetro en la declaración de la función.")
-    else:
-        idParam = directorio.tabla[nombreFuncion]["listaNombresParametros"][k-1]
-        cuadruplos.generarCuadruploNuevo('param', directorio.tabla[nombreFuncion]["tablaVariables"][idParam]["direccionVirtual"], None, argumento)
+    if len(pilaOperandos) >= 1:
+        argumento = pilaOperandos.pop()
+        argumentoTipo = pilaTipos.pop()
+        if k > len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
+            raise Exception("Se están mandando parámetros de más en la llamada a la función «"+nombreFuncion+"».")
+        if argumentoTipo != directorio.tabla[nombreFuncion]["listaTiposParametros"][k-1]:
+            raise Exception("El tipo del parámetro recibido en la llamada no corresponde con el tipo del parámetro en la declaración de la función.")
+        else:
+            idParam = directorio.tabla[nombreFuncion]["listaNombresParametros"][k-1]
+            cuadruplos.generarCuadruploNuevo('param', directorio.tabla[nombreFuncion]["tablaVariables"][idParam]["direccionVirtual"], None, argumento)
+
 
 def p_hiperexpresionesAdicionales(p):
     '''
@@ -640,9 +653,14 @@ def p_validarNulo(p):
     validarNulo : empty
     '''
     global k
-    if k != len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
+    print("tabla:",directorio.tabla[nombreFuncion])
+    print("k:",k)
+    if len(directorio.tabla[nombreFuncion]["listaNombresParametros"]) == 0:
+        k = 0
+    elif k != len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
         raise Exception("Se están mandando parámetros de menos en la llamada a la función «"+nombreFuncion+"».")
-    k=1
+    else:   
+        k=1
 
 def p_generarGoSub(p):
     '''
@@ -651,10 +669,11 @@ def p_generarGoSub(p):
     cuadruplos.generarCuadruploNuevo('GoSub', nombreFuncion, None, directorio.tabla[nombreFuncion]["contador"])
     pilaOperadores.pop()
     tipoFuncion = directorio.tabla[nombreFuncion]["tipoFuncion"]
-    direccionRetorno = avail.generarTemporalNuevo(tipoFuncion)
-    cuadruplos.generarCuadruploNuevo('=', directorio.tabla["global"]["tablaVariables"][nombreFuncion]["direccionVirtual"], None, direccionRetorno)
-    pilaOperandos.append(direccionRetorno)
-    pilaTipos.append(tipoFuncion)
+    if(tipoFuncion != "void"):
+        direccionRetorno = avail.generarTemporalNuevo(tipoFuncion)
+        cuadruplos.generarCuadruploNuevo('=', directorio.tabla["global"]["tablaVariables"][nombreFuncion]["direccionVirtual"], None, direccionRetorno)
+        pilaOperandos.append(direccionRetorno)
+        pilaTipos.append(tipoFuncion)
 
 def p_retorno(p):
     '''

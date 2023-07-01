@@ -1,7 +1,7 @@
 from yacc import parser
 
 def main():
-    nombreArchivo = "Aritmetica.txt"
+    nombreArchivo = "Archivo.txt"
     print("")
     archivo = open(nombreArchivo)
     datos = archivo.read()

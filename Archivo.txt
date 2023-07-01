@@ -1,41 +1,27 @@
 program patito;
 var
-   float: a, b, f;
+   int: a;
 
-func float uno(float aba)
-var
-   float: x;
+func void pruebaVoid(int a,int b)
 {
-   x=a+b*a;
-   print(a, b, a+b);
-   return (1.0);
+   print("EN FUNCION VOID");
+   print(a);
+   print(b);
 }
 
-func float dos(float a, float b, float g)
+func int buenaFuncion(int a)
 var
-   float: i;
+   int: b;
 {
-   i=b;
-   while (i>0)
-   {
-      a=a+b*i+b;
-      print(uno(5.0));
-      print(a);
-      i=i - 1;
-   }
-   return (2.0);
-}
-
-func float doble(float z)
-{
-   return (z*uno(z - 1));
+   print("Print en buenaFuncion.");
+   b = a+10;
+   return (b);
 }
 
 main()
 {
-   a=3.0; b=a+1;
-   print(a, b);
-   f=3.14;
-   print(dos(a+b*2, b, f*3));
-   print(a, b, f*2+1);
+   print("Ingresa el valor de a.");
+   read(a);
+   pruebaVoid(10,12)
+   print(buenaFuncion(a));
 }

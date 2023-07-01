@@ -1,0 +1,29 @@
+program patito;
+var
+   int: a, b;
+
+
+func int factorial(int b)
+var
+   int: a;
+{  
+    if (b == 1)
+    {
+        return (1);
+    }else
+    {   
+        a = b;
+        b = b - 1;
+        return(a*factorial(b));
+    }
+}
+
+
+
+main()
+{
+    print("Ingrese el valor de la variable a.");
+    read(a);
+    print("funcion doble");
+    print(factorial(3));
+}

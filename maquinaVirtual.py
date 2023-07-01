@@ -22,6 +22,7 @@ stackMemoria = []
 esFuncion = False
 stackMemoria.append(memoriaGlobal)
 saltosPendientes = []
+resultadosRecursivos = []
 
 def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: Constantes, cuadruplos: Cuadruplos, avail: Avail):
     print("Ejecutando máquina virtual: ")
@@ -353,10 +354,11 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 continue
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "param":
             # Obtain paramater index
-            indiceParametro = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1] - 1  ## ???
-            # print(current_local_memory.return_val())
+            indiceParametro = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1] - 1
             dirVParam = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             # print("DIR PARAM:",dirVParam)
+            # print("MEMORIA GLOBAL:",memoriaGlobal.memoria)
+            # print("MEMORIA LOCAL:",memoriaLocal.memoria)
             dirVirtualEnNuevoContexto = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
             valor = extraerValorPorDirVirtual(cuadruplos.listaCuadruplos[apuntadorInstrucciones][3])
             stackMemoria[-1].memoria[dirVParam] = valor
@@ -397,8 +399,8 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 apuntadorReturn = 0
                 if not (len(stackMemoria) <= 1):
                     # print("memoria en RETURN:")
-                    #for espacio in stackMemoria:
-                        # print("Espacio En RETURN:", espacio.memoria)
+                    # for espacio in stackMemoria:
+                    #     print("Espacio En RETURN:", espacio.memoria)
                     memoriaBorrada = stackMemoria.pop()
                     nuevaMemoria = stackMemoria[-1]
                     # print("memoria FINAL RETURN:",stackMemoria[-1].memoria)
@@ -417,7 +419,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 apuntadorReturn = 0
                 if not (len(stackMemoria) <= 1):
                     # print("memoria en ENDFUNC:")
-                    #for espacio in stackMemoria:
+                    # for espacio in stackMemoria:
                         # print("Espacio EN ENDFUNC:", espacio.memoria)
                     memoriaBorrada = stackMemoria.pop()
                     nuevaMemoria = stackMemoria[-1]
