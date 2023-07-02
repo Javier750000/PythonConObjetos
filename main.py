@@ -1,7 +1,7 @@
 from yacc import parser
 
 def main():
-    nombreArchivo = "Archivo.txt"
+    nombreArchivo = "fibonacci.txt"
     print("")
     archivo = open(nombreArchivo)
     datos = archivo.read()

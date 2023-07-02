@@ -1,0 +1,25 @@
+program patito;
+var
+   int: n;
+
+func int fibo(int n)
+var
+   int: a,b;
+{  
+    if(n <= 1)
+    {
+        return (n);
+    } else {
+        a = n - 1;
+        b = n - 2;
+        return (fibo(a) + fibo(b));
+    }
+}
+
+main()
+{
+    print("Ingrese el valor de la variable n.");
+    read(n);
+    print("funcion fibo");
+    print(fibo(n));
+}

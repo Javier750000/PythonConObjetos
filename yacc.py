@@ -653,8 +653,8 @@ def p_validarNulo(p):
     validarNulo : empty
     '''
     global k
-    print("tabla:",directorio.tabla[nombreFuncion])
-    print("k:",k)
+    # print("tabla:",directorio.tabla[nombreFuncion])
+    # print("k:",k)
     if len(directorio.tabla[nombreFuncion]["listaNombresParametros"]) == 0:
         k = 0
     elif k != len(directorio.tabla[nombreFuncion]["listaNombresParametros"]):
@@ -680,16 +680,17 @@ def p_retorno(p):
     retorno : RETURN PARENTESISINICIAL hiperexpresion PARENTESISFINAL PUNTOYCOMA
     '''
     tipoFuncion = directorio.tabla[pilaContextos[-1]]["tipoFuncion"]
-    print("DIRECTORIO:",directorio.tabla)
-    print("IMPRIMIR PILA OP:",pilaOperandos)
+    # print("DIRECTORIO:",directorio.tabla)
+    # print("IMPRIMIR PILA OP:",pilaOperandos)
     retorno = pilaOperandos.pop()
     tipoRetorno = pilaTipos.pop()
     if tipoRetorno != tipoFuncion:
         raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
     else:
+        # print("TABLA EN RETORNO NORMAL", directorio.tabla)
         direccionGlobalFuncion = directorio.tabla["global"]["tablaVariables"][pilaContextos[-1]]["direccionVirtual"]
         cuadruplos.generarCuadruploNuevo('=',retorno, None, direccionGlobalFuncion)
-        cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionGlobalFuncion)
         global contadorRetorno
         contadorRetorno+=1
 
@@ -703,7 +704,10 @@ def p_retornoCondicional(p):
     if tipoRetorno != tipoFuncion:
         raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
     else:
-        cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
+        print("TABLA EN RETORNO CONDICIONAL", directorio.tabla)
+        direccionGlobalFuncion = directorio.tabla["global"]["tablaVariables"][pilaContextos[-1]]["direccionVirtual"]
+        cuadruplos.generarCuadruploNuevo('=',retorno, None, direccionGlobalFuncion)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionGlobalFuncion)
         global contadorRetornoCondicional
         contadorRetornoCondicional+=1
 
@@ -717,7 +721,11 @@ def p_retornoElse(p):
     if tipoRetorno != tipoFuncion:
         raise Exception("El tipo del retorno no corresponde al tipo de la función «"+pilaContextos[-1]+"».")
     else:
-        cuadruplos.generarCuadruploNuevo('Return', None, None, retorno)
+        print("tabla en else:", directorio.tabla)
+        print("tabla de funcion:", directorio.tabla["global"]["tablaVariables"][pilaContextos[-1]])
+        direccionGlobalFuncion = directorio.tabla["global"]["tablaVariables"][pilaContextos[-1]]["direccionVirtual"]
+        cuadruplos.generarCuadruploNuevo('=',retorno, None, direccionGlobalFuncion)
+        cuadruplos.generarCuadruploNuevo('Return', None, None, direccionGlobalFuncion)
         global contadorRetornoElse
         contadorRetornoElse+=1
 

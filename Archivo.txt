@@ -22,6 +22,6 @@ main()
 {
    print("Ingresa el valor de a.");
    read(a);
-   pruebaVoid(10,12)
+   pruebaVoid(a,12)
    print(buenaFuncion(a));
 }

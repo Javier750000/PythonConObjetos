@@ -30,6 +30,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
     global _directorioProc
     _directorioProc = directorioProcedimientos
     apuntadorInstrucciones = 0
+    #print("TABLA CONSTANTES:", constantes)
     for idConst, dataConstante in constantes.items():
         guardarEnMemoria(dataConstante["direccionVirtual"], idConst)
     print("Cuádruplos: ")
@@ -41,16 +42,25 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
     while cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] != "End":
         
         global memoriaLocal
+        # print(f'MEMORIA GLOBAL EN INSTRUCCION :{apuntadorInstrucciones}',memoriaGlobal.memoria)
+        # print(f'MEMORIA LOCAL EN INSTRUCCION :{apuntadorInstrucciones}',memoriaLocal.memoria)
 
         if cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "=":
             # print("Asignación:", cuadruplos.listaCuadruplos[apuntadorInstrucciones])
+            # print("Memoria GLOBAL en ASIG:", memoriaGlobal.memoria)
+            # print("Memoria LOCAL en ASIG:", memoriaLocal.memoria)
+            # for espacio in stackMemoria:
+            #     print("Espacio En STACK MEMORIA:", espacio.memoria)
             valor = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             dirV = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
             #print("VALOR:", valor)
             if(esFuncion):
-                # print("VALOR EN IF:", valor)
+                # print("VALOR EN FUNCION ASIG:", valor)
+                # actualMemo = stackMemoria[-1]
+                # for espacio in stackMemoria:
+                #     valorFinal = actualMemo[dirV]
                 valorFinal = extraerValorPorDirVirtual(valor)
-                # print("VALORFINAL EN IF:", valorFinal)
+                # print("VALORFINAL EN FUNCION ASIG:", valorFinal)
                 guardarEnMemoria(dirV,valorFinal)
             else:    
                 # print("Dirección asignación:", dirV)
@@ -378,8 +388,9 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
                 for variable in funcion["tablaVariables"].items():
                     # print("variables ERA:", variable[1]["direccionVirtual"])
                     memoriaNuevoContexto.insertar(variable[1]["direccionVirtual"], None)
-                funcionDataGlobal = directorioProcedimientos.tabla["global"]["tablaVariables"][nombreFuncion]
-                memoriaNuevoContexto.insertar(funcionDataGlobal["direccionVirtual"], nombreFuncion)
+                #print("TABLA EN ERA:", directorioProcedimientos.tabla["global"]["tablaVariables"])
+                # funcionDataGlobal = directorioProcedimientos.tabla["global"]["tablaVariables"][nombreFuncion]
+                # memoriaNuevoContexto.insertar(funcionDataGlobal["direccionVirtual"], nombreFuncion)
                 # print("memoria NUEVO CONTEXTO:", memoriaNuevoContexto.memoria)
                 stackMemoria.append(memoriaNuevoContexto)
         elif cuadruplos.listaCuadruplos[apuntadorInstrucciones][0] == "GoSub":

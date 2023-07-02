@@ -3,19 +3,15 @@ var
    int: a, b;
 
 
-func int factorial(int b)
+func int simpleRecursiva(int b)
 var
    int: a;
 {  
-    if (b == 1)
+    if(b <> 6)
     {
-        return (1);
-    }else
-    {   
-        a = b;
-        b = b - 1;
-        return(a*factorial(b));
+        b  =  simpleRecursiva(b+1);
     }
+    return (b);
 }
 
 
@@ -24,6 +20,7 @@ main()
 {
     print("Ingrese el valor de la variable a.");
     read(a);
-    print("funcion doble");
-    print(factorial(3));
+    print("funcion simpleRecursiva");
+    b = simpleRecursiva(2);
+    print(b);
 }
