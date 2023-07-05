@@ -2,7 +2,6 @@ program patito;
 var
    int: a;
 
-
 func int factorial(int x)
 var
    int: a;
@@ -15,8 +14,6 @@ var
         return (x * factorial(a));
     }
 }
-
-
 
 main()
 {

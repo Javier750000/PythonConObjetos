@@ -4,6 +4,8 @@ var
 
 main()
 {
+   B=5;
+   C=10;
    A=B+C;
    while(A>B*C)
    {

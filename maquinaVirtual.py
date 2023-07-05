@@ -54,6 +54,7 @@ def ejecutar_maquina_virtual(directorioProcedimientos: Directorio, constantes: C
             valor = cuadruplos.listaCuadruplos[apuntadorInstrucciones][1]
             dirV = cuadruplos.listaCuadruplos[apuntadorInstrucciones][3]
             #print("VALOR:", valor)
+            global esFuncion
             if(esFuncion):
                 # print("VALOR EN FUNCION ASIG:", valor)
                 # actualMemo = stackMemoria[-1]

@@ -2,19 +2,16 @@ program patito;
 var
    int: a, b;
 
-
 func int simpleRecursiva(int b)
 var
    int: a;
 {  
     if(b <> 6)
     {
-        b  =  simpleRecursiva(b+1);
+        b = simpleRecursiva(b+1);
     }
     return (b);
 }
-
-
 
 main()
 {
